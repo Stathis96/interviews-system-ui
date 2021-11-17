@@ -2,7 +2,7 @@
 <!-- Dark Header component -->
  <!-- Fontswesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
-     
+
     <header class="text-gray-100 bg-neutral body-font shadow w-full">
         <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
             <nav class="flex lg:w-2/5 flex-wrap items-center text-base md:ml-auto">
@@ -23,9 +23,9 @@
 </template>
 
 <script>
-  export default {
-    
-  }
+export default {
+
+}
 </script>
 
 <style lang="scss" scoped>

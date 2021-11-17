@@ -1,12 +1,12 @@
 <template>
-<div class="h-screen"> 
+<div class="h-screen">
   <Header/>
   <div class="h-5/6 w-full bg-base-300">
-    <MainTable/>
+    <MainTable
+    />
     <Modal/>
     <DeleteModal/>
   </div>
-
   <Footer/>
   </div>
 </template>
@@ -20,7 +20,6 @@ import Modal from './components/Modal.vue'
 import DeleteModal from './components/DeleteModal.vue'
 
 </script>
-
 
 <style>
 
