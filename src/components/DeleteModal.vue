@@ -1,8 +1,8 @@
 <template>
   <div>
-    <button class="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" v-on:click="toggleModal()">
+    <!-- <button class="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" v-on:click="toggleModal()">
       Open delete modal
-    </button>
+    </button> -->
     <div v-if="showModal" class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
 
             <div class="w-full  max-w-lg p-5 relative mx-auto my-auto rounded-xl shadow-lg  bg-white ">
@@ -22,7 +22,7 @@
             <button class="mb-2 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100" v-on:click="toggleModal()">
                 Cancel
             </button>
-            <button class="mb-2 md:mb-0 bg-red-500 border border-red-500 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-red-600" v-on:click="toggleModal()">Delete</button>
+            <button class="mb-2 md:mb-0 bg-red-500 border border-red-500 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-red-600" @click="submitDelete">Delete</button>
         </div>
 
             </div>
@@ -31,20 +31,44 @@
   </div>
 </template>
 
-<script >
-export default {
+<script lang="ts">
+import { defineComponent, ref } from '@vue/runtime-core'
+import { useInterviewDeleteMutations } from '../hooks/useInterviewsMutations'
+
+export default defineComponent({
   name: 'delete-modal',
-  data () {
-    return {
-      showModal: false
+  props: {
+    rowId: {
+      type: String,
+      required: false
     }
   },
-  methods: {
-    toggleModal: function () {
-      this.showModal = !this.showModal
+  setup (props, { emit }) {
+    const showModal = ref(true)
+    const toggleModal = () => {
+      showModal.value = !showModal.value
+      emit('changevalue')
+    }
+    const { deleteInterview } = useInterviewDeleteMutations()
+
+    const submitDelete = () => {
+      console.log('showmodal')
+      deleteInterview(props.rowId as string).then((res) => {
+        toggleModal()
+        console.log('deleted', res)
+        emit('refetchinterviews')
+      }).catch((err) => {
+        alert(err)
+      })
+    }
+    return {
+      showModal,
+      toggleModal,
+      deleteInterview,
+      submitDelete
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>
