@@ -23,7 +23,7 @@ export function useInterviewMutations (variables: InterviewInputData) {
             data: {
               date: variables.date,
               city: variables.city,
-              area: variables.age,
+              area: variables.area,
               firstName: variables.firstName,
               lastName: variables.lastName,
               mobile: variables.mobile,
@@ -76,7 +76,7 @@ export function useInterviewUpdateMutations (variables: InterviewInputData) {
             updateInterviewData: {
               date: variables.date,
               city: variables.city,
-              area: variables.age,
+              area: variables.area,
               firstName: variables.firstName,
               lastName: variables.lastName,
               mobile: variables.mobile,

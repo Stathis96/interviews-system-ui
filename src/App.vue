@@ -4,8 +4,8 @@
   <div class="h-5/6 w-full bg-base-300">
     <MainTable
     />
-    <Modal/>
-    <DeleteModal/>
+    <!-- <Modal/> -->
+    <!-- <DeleteModal/> -->
   </div>
   <Footer/>
   </div>
@@ -16,8 +16,8 @@
 import MainTable from './components/MainTable.vue'
 import Footer from './components/Footer.vue'
 import Header from './components/Header.vue'
-import Modal from './components/Modal.vue'
-import DeleteModal from './components/DeleteModal.vue'
+// import Modal from './components/Modal.vue'
+// import DeleteModal from './components/DeleteModal.vue'
 
 </script>
 
