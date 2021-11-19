@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import axios, { AxiosInstance } from 'axios'
-// import { authService } from './auth'
+import { authService } from './auth'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -17,9 +17,9 @@ declare module '@vue/runtime-core' {
 const api = axios.create({ baseURL: 'http://127.0.0.1:999/graphql' })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-api.interceptors.request.use((config: any) => {
-  // const accessToken = await authService.getAccessToken() as string
-  const accessToken = '123'
+api.interceptors.request.use(async (config: any) => {
+  const accessToken = await authService.getAccessToken() as string
+  // const accessToken = '123'
   config.headers.common.Authorization = `Bearer ${accessToken}`
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return config
