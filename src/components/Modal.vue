@@ -10,7 +10,7 @@
           <!--header-->
           <div class="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
             <h3 class="text-3xl font-semibold">
-              Create/Edit Interview
+              {{$props.editedInterview.interviewId === '' ? 'Create' : 'Edit'}} Interview
             </h3>
           </div>
           <!--body-->
@@ -155,13 +155,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/runtime-core'
-import { useInterviewMutations } from '../hooks/useInterviewsMutations'
+import { defineComponent, onMounted, PropType, ref } from '@vue/runtime-core'
+import { useInterviewMutations, useInterviewUpdateMutations } from '../hooks/useInterviewsMutations'
 import InterviewInputData from '../interfaces/classes/InterviewInputData'
+import Interview from '../interfaces/Interview'
+import moment from 'moment'
 
 export default defineComponent({
   name: 'regular-modal',
-  setup (_, { emit }) {
+  props: {
+    rowId: {
+      type: String,
+      required: false
+    },
+    editedInterview: {
+      type: Object as PropType<Interview>,
+      required: false
+    }
+  },
+  setup (props, { emit }) {
     const showModal = ref(true)
     const interviewData = ref<InterviewInputData>({
       date: '',
@@ -186,14 +198,52 @@ export default defineComponent({
     const { createInterview } =
     useInterviewMutations(interviewData.value)
 
+    const { updateInterview } =
+    useInterviewUpdateMutations(interviewData.value)
+
     const submitAdd = () => {
-      createInterview().then((res) => {
-        console.log('created', res)
-        emit('refetchinterviews')
-        cancelAll()
-      }).catch((err) => {
-        alert(err)
-      })
+      if (props.editedInterview?.interviewId === '') {
+        createInterview().then((res) => {
+          console.log('created', res)
+          emit('refetchinterviews')
+          cancelAll()
+        }).catch((err) => {
+          alert(err)
+        })
+      } else {
+        updateInterview(props.editedInterview?.interviewId as string).then((res) => {
+          console.log('updated', res)
+          emit('refetchinterviews')
+          cancelAll()
+        }).catch((err) => {
+          alert(err)
+        })
+      }
+    }
+    onMounted(() => {
+      if (props.editedInterview?.interviewId !== '') {
+        filledFields(props.editedInterview as Interview)
+      }
+    })
+    const filledFields = (filledInterview :Interview) => {
+      interviewData.value = { ...filledInterview, date: filledInterview.date.toString() }
+      interviewData.value.date = moment(filledInterview.date.toString()).format('YYYY-MM-DD')
+      // interviewData.value.city = filledInterview.city
+      // interviewData.value.area = filledInterview.area
+      // interviewData.value.firstName = filledInterview.firstName
+      // interviewData.value.lastName = filledInterview.lastName
+      // interviewData.value.mobile = filledInterview.mobile
+      // interviewData.value.age = filledInterview.age
+      // interviewData.value.healthCertificate = filledInterview.healthCertificate
+      // interviewData.value.workPermit = filledInterview.workPermit
+      // interviewData.value.efetSeminars = filledInterview.efetSeminars
+      // interviewData.value.vaccinated = filledInterview.vaccinated
+      // interviewData.value.doses = filledInterview.doses
+      // interviewData.value.shifts = filledInterview.shifts
+      // interviewData.value.comments = filledInterview.comments
+      // interviewData.value.toStore = filledInterview.toStore
+      // interviewData.value.result = filledInterview.result
+      // interviewData.value.bio = filledInterview.bio
     }
 
     const cancelAll = () => {

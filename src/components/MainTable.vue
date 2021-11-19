@@ -1,6 +1,6 @@
 <template>
     <div class="w-full bg-base-300 py-10">
-        <div class="mx-auto container bg-white dark:bg-gray-800 dark:bg-gray-800 shadow rounded">
+        <div class="mx-auto h-screen container bg-white dark:bg-gray-800 dark:bg-gray-800 shadow rounded" style="height:60vh">
             <div class="flex flex-col lg:flex-row p-4 lg:p-8 justify-between items-start lg:items-stretch w-full">
                 <div class="w-full lg:w-1/3 flex flex-col lg:flex-row items-start lg:items-center">
 
@@ -53,22 +53,19 @@
                         <button class="bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm">Interviews with Null Result</button>
                         <!-- ADD NEW INTERVIEW -->
                         <div class="text-white ml-4 cursor-pointer focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray bg-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 w-8 h-8 rounded flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" @click="openCreateDialog" >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" @click="openCreateDialog(emptyInterview)" >
                                 <path stroke="none" d="M0 0h24v24H0z" />
                                 <line x1="12" y1="5" x2="12" y2="19" />
                                 <line x1="5" y1="12" x2="19" y2="12" />
                             </svg>
-                            <!-- <div v-if="addInterview">
-                                <Modal />
-                            </div> -->
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- End of Table's first Row -->
+            <!-- End of Table's Header -->
 
             <!-- Populating Table -->
-            <div class="w-full overflow-x-scroll xl:overflow-x-hidden">
+            <div class="w-full h-full overflow-x-scroll xl:overflow-x-hidden">
                 <table class="min-w-full bg-white dark:bg-gray-800" >
                     <thead>
                         <tr class="w-full h-16 border-gray-300 border-b py-8">
@@ -178,7 +175,7 @@
                                 <div v-if="showBullets" class="opacity-0 fixed inset-0" @click="showrow"></div>
                                 <div v-if="rowId === result.interviewId && showBullets" class="dropdown-content mt-8 absolute left-0 -ml-12 shadow-md z-10 w-32">
                                     <ul class="bg-white dark:bg-gray-800 shadow rounded py-1">
-                                        <li class="cursor-pointer text-gray-600 dark:text-gray-400 text-sm leading-3 tracking-normal py-3 hover:bg-indigo-700 hover:text-white px-3 font-normal">Edit</li>
+                                        <li class="cursor-pointer text-gray-600 dark:text-gray-400 text-sm leading-3 tracking-normal py-3 hover:bg-indigo-700 hover:text-white px-3 font-normal" @click="openCreateDialog(result)">Edit</li>
                                         <li class="cursor-pointer text-gray-600 dark:text-gray-400 text-sm leading-3 tracking-normal py-3 hover:bg-indigo-700 hover:text-white px-3 font-normal" @click="toggleModal(result.interviewId)">Delete</li>
                                     </ul>
                                 </div>
@@ -206,6 +203,7 @@
         </div>
         <div v-if="addInterview">
             <Modal
+            :editedInterview="editedInterview"
             @refetchinterviews='fetchInterviews'
             @changingvalue='closemodal'
             />
@@ -219,6 +217,7 @@ import DeleteModal from './DeleteModal.vue'
 import Modal from './Modal.vue'
 
 import moment from 'moment'
+import Interview from '../interfaces/Interview'
 
 export default defineComponent({
   name: 'CompactTableWithActionsAndSelect',
@@ -227,16 +226,36 @@ export default defineComponent({
     Modal
   },
   setup () {
+    const emptyInterview = ref<Interview>({
+      interviewId: '',
+      date: new Date(),
+      city: '',
+      area: '',
+      firstName: '',
+      lastName: '',
+      mobile: '',
+      age: 15,
+      healthCertificate: false,
+      workPermit: false,
+      efetSeminars: false,
+      vaccinated: false,
+      doses: 0,
+      shifts: 0,
+      comments: [''],
+      toStore: [''],
+      result: '',
+      bio: ''
+    })
     const showBullets = ref(false)
     const showModal = ref(false)
     const addInterview = ref(false)
     const rowId = ref('')
+    const editedInterview = ref<Interview>()
 
     const toggleModal = (id: string) => {
       showModal.value = !showModal.value
       showBullets.value = false
       rowId.value = id
-      console.log('id is ', rowId.value)
     }
     const openSide = (id : string) => {
       showBullets.value = !showBullets.value
@@ -244,16 +263,15 @@ export default defineComponent({
     }
     const showrow = () => {
       showBullets.value = !showBullets.value
-      console.log('show bull value is', showBullets.value)
     }
-    const openCreateDialog = () => {
-      console.log('i ve been opened')
+    const openCreateDialog = (interview: Interview) => {
       addInterview.value = !addInterview.value
-      console.log('add interv value', addInterview.value)
+      editedInterview.value = interview
     }
     const closemodal = () => {
       showModal.value = false
       addInterview.value = false
+      showBullets.value = false
     }
     const { result, fetchInterviews } = useFetchInterviews()
 
@@ -269,7 +287,9 @@ export default defineComponent({
       showBullets,
       openSide,
       rowId,
-      moment
+      moment,
+      editedInterview,
+      emptyInterview
     }
   }
 })
