@@ -1,5 +1,33 @@
 import gql from 'graphql-tag'
 
+export const getPaginatedInterviews = gql`
+query getPaginatedInterviews($getPaginatedInterviewsData: PaginationInputData!) {
+  paginatedInterviews: getPaginatedInterviews(data: $getPaginatedInterviewsData) {
+    context {
+    interviewId
+    date
+    city
+    area
+    firstName
+    lastName
+    mobile
+    age
+    healthCertificate
+    workPermit
+    efetSeminars
+    vaccinated
+    doses
+    shifts
+    comments
+    toStore
+    result
+    bio
+    }
+    total
+  }
+}
+`
+
 export const getAllInterviews = gql`
   query getAllInterviews{
     allInterviews: getAllInterviews {

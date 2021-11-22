@@ -1,9 +1,11 @@
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, Ref } from 'vue'
 import { print } from 'graphql'
 import Interview from '../interfaces/Interview'
 import { GraphQLResponse } from '../interfaces/AxiosResponse'
-import { getAllInterviews, getInterview, getNullInterviews } from '../gql/Interviews/InterviewQueries'
+import { getAllInterviews, getInterview, getNullInterviews, getPaginatedInterviews } from '../gql/Interviews/InterviewQueries'
 import { api } from '../boot/axios'
+import PaginationInputData from '../interfaces/classes/PaginationInputData'
+import PaginatedInterviews from '../interfaces/PaginatedInterviews'
 
 export function useFetchInterviews () {
   const result = ref<Interview[]>([])
@@ -111,5 +113,55 @@ export function useFetchInterviewById (id: string) {
     result,
     loading,
     fetchInterview
+  }
+}
+
+export function useFetchPaginatedInterviews (variables: Ref<PaginationInputData>) {
+  const result = ref<Interview[]>([])
+  const loading = ref(false)
+  const total = ref<number>(0)
+
+  const fetchInterviews = async () => {
+    try {
+      loading.value = true
+      const response = await api({
+        url: '',
+        method: 'post',
+        data: {
+          query: print(getPaginatedInterviews),
+          variables: {
+            // data: variables
+            getPaginatedInterviewsData: {
+              page: variables.value.page,
+              limit: variables.value.limit,
+              filter: variables.value.filter
+            }
+          }
+        }
+      }) as unknown as GraphQLResponse <{ paginatedInterviews: PaginatedInterviews}>
+
+      if (response.data.data) {
+        console.log('CHECK THIS OUT', response.data.data.paginatedInterviews)
+        result.value = response.data.data.paginatedInterviews.context
+        total.value = response.data.data.paginatedInterviews.total
+      }
+    } catch (e) {
+      console.log(e)
+    } finally {
+      loading.value = false
+    }
+  }
+  onMounted(async () => {
+    await fetchInterviews().catch(e => console.log(e))
+  })
+  watch(variables, async () => {
+    console.log('variables are', variables)
+    await fetchInterviews()
+  })
+  return {
+    result,
+    loading,
+    total,
+    fetchInterviews
   }
 }
