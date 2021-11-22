@@ -206,6 +206,7 @@ export default defineComponent({
         createInterview().then((res) => {
           console.log('created', res)
           emit('refetchinterviews')
+          emit('refetch')
           cancelAll()
         }).catch((err) => {
           alert(err)
@@ -213,7 +214,9 @@ export default defineComponent({
       } else {
         updateInterview(props.editedInterview?.interviewId as string).then((res) => {
           console.log('updated', res)
+          console.log('what was sent', interviewData.value)
           emit('refetchinterviews')
+          emit('refetch')
           cancelAll()
         }).catch((err) => {
           alert(err)
@@ -226,24 +229,24 @@ export default defineComponent({
       }
     })
     const filledFields = (filledInterview :Interview) => {
-      interviewData.value = { ...filledInterview, date: filledInterview.date.toString() }
+      // interviewData.value = { ...filledInterview, date: moment(filledInterview.date.toString()).format('YYYY-MM-DD') }
       interviewData.value.date = moment(filledInterview.date.toString()).format('YYYY-MM-DD')
-      // interviewData.value.city = filledInterview.city
-      // interviewData.value.area = filledInterview.area
-      // interviewData.value.firstName = filledInterview.firstName
-      // interviewData.value.lastName = filledInterview.lastName
-      // interviewData.value.mobile = filledInterview.mobile
-      // interviewData.value.age = filledInterview.age
-      // interviewData.value.healthCertificate = filledInterview.healthCertificate
-      // interviewData.value.workPermit = filledInterview.workPermit
-      // interviewData.value.efetSeminars = filledInterview.efetSeminars
-      // interviewData.value.vaccinated = filledInterview.vaccinated
-      // interviewData.value.doses = filledInterview.doses
-      // interviewData.value.shifts = filledInterview.shifts
-      // interviewData.value.comments = filledInterview.comments
-      // interviewData.value.toStore = filledInterview.toStore
-      // interviewData.value.result = filledInterview.result
-      // interviewData.value.bio = filledInterview.bio
+      interviewData.value.city = filledInterview.city
+      interviewData.value.area = filledInterview.area
+      interviewData.value.firstName = filledInterview.firstName
+      interviewData.value.lastName = filledInterview.lastName
+      interviewData.value.mobile = filledInterview.mobile
+      interviewData.value.age = filledInterview.age
+      interviewData.value.healthCertificate = filledInterview.healthCertificate
+      interviewData.value.workPermit = filledInterview.workPermit
+      interviewData.value.efetSeminars = filledInterview.efetSeminars
+      interviewData.value.vaccinated = filledInterview.vaccinated
+      interviewData.value.doses = filledInterview.doses
+      interviewData.value.shifts = filledInterview.shifts
+      interviewData.value.comments = filledInterview.comments
+      interviewData.value.toStore = filledInterview.toStore
+      interviewData.value.result = filledInterview.result
+      interviewData.value.bio = filledInterview.bio
     }
 
     const cancelAll = () => {

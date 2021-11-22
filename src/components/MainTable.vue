@@ -18,14 +18,14 @@
                 <div class="w-full lg:w-2/3 flex flex-col lg:flex-row items-start lg:items-center justify-end">
                 <!-- Pagination Stuff -->
                     <div class="flex items-center lg:border-l lg:border-r border-gray-300 py-3 lg:py-0 lg:px-6">
-                        <p class="text-base text-gray-600 dark:text-gray-400" id="page-view">Viewing 1 - 20 of 60</p>
-                        <a class="text-gray-600 dark:text-gray-400 ml-2 border-transparent border cursor-pointer rounded" onclick="pageView(false)">
+                        <p class="text-base text-gray-600 dark:text-gray-400" id="page-view">Viewing {{paginatedData.page}} - {{paginatedData.limit}} of {{total}}</p>
+                        <a class="text-gray-600 dark:text-gray-400 ml-2 border-transparent border cursor-pointer rounded" @click="subtract">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" />
                                 <polyline points="15 6 9 12 15 18" />
                             </svg>
                         </a>
-                        <a class="text-gray-600 dark:text-gray-400 border-transparent border rounded focus:outline-none cursor-pointer" onclick="pageView(true)">
+                        <a class="text-gray-600 dark:text-gray-400 border-transparent border rounded focus:outline-none cursor-pointer" @click="add">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" />
                                 <polyline points="9 6 15 12 9 18" />
@@ -50,7 +50,7 @@
                     </div> -->
                     <div class="lg:ml-6 flex items-center">
                     <!-- Button for Showing Interviews with NULL RESULT -->
-                        <button class="bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm">Interviews with Null Result</button>
+                        <button class="bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showNotNull = !showNotNull">Interviews with Null Result</button>
                         <!-- ADD NEW INTERVIEW -->
                         <div class="text-white ml-4 cursor-pointer focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray bg-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 w-8 h-8 rounded flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" @click="openCreateDialog(emptyInterview)" >
@@ -108,27 +108,71 @@
                     </thead>
                     <!-- Table's Rows  -->
                     <tbody>
-                        <tr class="h-24 border-gray-300 border-b"  v-for="result in result" :key="result.id" :result="result" >
-                            <!-- <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">
-                                <div class="relative w-10 text-gray-600 dark:text-gray-400">
-                                    <div class="absolute top-0 right-0 w-5 h-5 mr-2 -mt-1 rounded-full bg-indigo-700 text-white flex justify-center items-center text-xs">3</div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" />
-                                        <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-                                    </svg>
-                                </div>
-                            </td> -->
+                        <tr class="h-24 border-gray-300 border-b"  v-for="result in paginatedResult" :key="result.id" :result="result" v-if="showNotNull">
 
-                            <!-- For Image -->
-                            <!-- <td class="pr-6 whitespace-no-wrap">
-                                <div class="flex items-center">
-                                    <div class="h-8 w-8">
-                                        <img src="https://tuk-cdn.s3.amazonaws.com/assets/components/advance_tables/at_1.png" alt="" class="h-full w-full rounded-full overflow-hidden shadow" />
-                                    </div>
-                                    <p class="ml-2 text-gray-800 dark:text-gray-100 tracking-normal leading-4 text-sm">Carrie Anthony</p>
+                            <td class="pl-4 text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{moment(result?.date).format('MMMM Do YYYY')}}</td>
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.firstName}}</td>
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.lastName}}</td>
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.city}}</td>
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.area}}</td>
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.mobile}}</td>
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.age}}</td>
+
+                            <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
+                                <input type="checkbox" v-if="result.healthCertificate" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
+                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
+                            </td>
+
+                            <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
+                                <input type="checkbox" v-if="result.workPermit" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
+                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
+                            </td>
+
+                            <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
+                                <input type="checkbox" v-if="result.efetSeminars" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
+                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
+                            </td>
+
+                            <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
+                                <input type="checkbox" v-if="result.vaccinated" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
+                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
+                            </td>
+
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.doses}}</td>
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.shifts}}</td>
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.comments}}</td>
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.toStore}}</td>
+
+                            <!-- For Result -->
+                            <td class="pr-6">
+                                <div v-if="result.result === null" class="w-3 h-3 rounded-full bg-success"></div>
+                                <div v-else class="w-3 h-3 rounded-full bg-red-600"></div>
+                            </td>
+                            <!-- For result -->
+
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.bio}}</td>
+
+                            <td class="pr-8 relative">
+                                <div v-if="showBullets" class="opacity-0 fixed inset-0" @click="showrow"></div>
+                                <div v-if="rowId === result.interviewId && showBullets" class="dropdown-content mt-8 absolute left-0 -ml-12 shadow-md z-10 w-32">
+                                    <ul class="bg-white dark:bg-gray-800 shadow rounded py-1">
+                                        <li class="cursor-pointer text-gray-600 dark:text-gray-400 text-sm leading-3 tracking-normal py-3 hover:bg-indigo-700 hover:text-white px-3 font-normal" @click="openCreateDialog(result)">Edit</li>
+                                        <li class="cursor-pointer text-gray-600 dark:text-gray-400 text-sm leading-3 tracking-normal py-3 hover:bg-indigo-700 hover:text-white px-3 font-normal" @click="toggleModal(result.interviewId)">Delete</li>
+                                    </ul>
                                 </div>
-                            </td> -->
+                                <button class="text-gray-500 rounded cursor-pointer border border-transparent focus:outline-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" @click="openSide(result.interviewId)" class="icon icon-tabler icon-tabler-dots-vertical dropbtn" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" />
+                                        <circle cx="12" cy="12" r="1" />
+                                        <circle cx="12" cy="19" r="1" />
+                                        <circle cx="12" cy="5" r="1" />
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <tr class="h-24 border-gray-300 border-b"  v-for="result in res" :key="result.id" :result="res" v-else>
+
                             <td class="pl-4 text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{moment(result?.date).format('MMMM Do YYYY')}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.firstName}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.lastName}}</td>
@@ -199,20 +243,22 @@
             :rowId="rowId"
             @changevalue='closemodal'
             @refetchinterviews='fetchInterviews'
+            @refetch='fetch'
             />
         </div>
         <div v-if="addInterview">
             <Modal
             :editedInterview="editedInterview"
             @refetchinterviews='fetchInterviews'
+            @refetch='fetch'
             @changingvalue='closemodal'
             />
         </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/runtime-core'
-import { useFetchInterviews } from '../hooks/useFetchInterviews'
+import { computed, defineComponent, ref, watch } from '@vue/runtime-core'
+import { useFetchInterviews, useFetchNullInterviews, useFetchPaginatedInterviews } from '../hooks/useFetchInterviews'
 import DeleteModal from './DeleteModal.vue'
 import Modal from './Modal.vue'
 
@@ -249,6 +295,7 @@ export default defineComponent({
     const showBullets = ref(false)
     const showModal = ref(false)
     const addInterview = ref(false)
+    const showNotNull = ref(true)
     const rowId = ref('')
     const editedInterview = ref<Interview>()
 
@@ -274,11 +321,55 @@ export default defineComponent({
       showBullets.value = false
     }
     const { result, fetchInterviews } = useFetchInterviews()
+    const { result: res, fetchInterviews: fetch } = useFetchNullInterviews()
 
+    const pagination = ref({
+      page: 1,
+      limit: 2,
+      rowsNumber: 20,
+      filter: ''
+    })
+
+    const paginatedData = computed(() => {
+      return {
+        page: pagination.value.page,
+        limit: pagination.value.limit,
+        filter: pagination.value.filter
+      }
+    })
+
+    const { result: paginatedResult, fetchInterviews: paginatedInterviews, total } = useFetchPaginatedInterviews(paginatedData)
+    watch(total, () => {
+      pagination.value.rowsNumber = total.value
+    })
+
+    const subtract = () => {
+    //   if (pagination.value.page - pagination.value.limit <= 0) return
+
+      pagination.value.page = pagination.value.page - pagination.value.limit
+    //   if (pagination.value.limit > pagination.value.page) {
+    //     pagination.value.limit = pagination.value.limit - pagination.value.page
+    //     console.log('pagination value rows', pagination.value.limit)
+    //   } else {
+    //     pagination.value.limit = pagination.value.limit - pagination.value.page
+    //   }
+    }
+
+    const add = () => {
+      if (pagination.value.page > pagination.value.limit - pagination.value.page) return
+      pagination.value.page = pagination.value.page + pagination.value.limit
+
+      if (pagination.value.limit < pagination.value.page) {
+        pagination.value.limit = total.value
+      } else {
+        pagination.value.limit = pagination.value.limit + pagination.value.page
+      }
+    }
     return {
       toggleModal,
       showModal,
       closemodal,
+      showNotNull,
       openCreateDialog,
       result,
       fetchInterviews,
@@ -289,7 +380,15 @@ export default defineComponent({
       rowId,
       moment,
       editedInterview,
-      emptyInterview
+      emptyInterview,
+      res,
+      add,
+      subtract,
+      fetch,
+      paginatedResult,
+      paginatedInterviews,
+      total,
+      paginatedData
     }
   }
 })
