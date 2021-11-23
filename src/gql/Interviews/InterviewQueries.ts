@@ -24,6 +24,7 @@ query getPaginatedInterviews($getPaginatedInterviewsData: PaginationInputData!) 
     bio
     }
     total
+    offset
   }
 }
 `

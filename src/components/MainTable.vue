@@ -17,8 +17,22 @@
 
                 <div class="w-full lg:w-2/3 flex flex-col lg:flex-row items-start lg:items-center justify-end">
                 <!-- Pagination Stuff -->
-                    <div class="flex items-center lg:border-l lg:border-r border-gray-300 py-3 lg:py-0 lg:px-6">
-                        <p class="text-base text-gray-600 dark:text-gray-400" id="page-view">Viewing {{paginatedData.page}} - {{paginatedData.limit}} of {{total}}</p>
+                    <div class="flex items-center lg:border-l lg:border-r border-gray-300 py-3 lg:py-0 lg:px-6" v-if="showNotNull">
+
+                        <!-- <p class="text-base text-gray-600 dark:text-gray-400 pr-4" id="page-view">Records per Page </p> -->
+                        <div class="dropdown dropdown-hover
+                            bg-gray-200 border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm
+                            mr-2">Records per Page
+                            <!-- <div class="m-1 btn">Records per Page</div> -->
+                                <select class="ml-6 mt-16 p-2 shadow menu dropdown-content bg-base-100 rounded-box w-20" v-model.number="paginatedData.limit" @click="change">
+                                    <option value="3" selected>3</option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="10000">All</option>
+                                </select>
+                        </div>
+                        <p class="text-base text-gray-600 dark:text-gray-400" id="page-view">Viewing {{x}} - {{y}} of {{total}} </p>
+                        <!-- <p class="pl-10">page: {{paginatedData.page}} limit:{{paginatedData.limit}} offset:{{offset}}</p> -->
                         <a class="text-gray-600 dark:text-gray-400 ml-2 border-transparent border cursor-pointer rounded" @click="subtract">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" />
@@ -242,14 +256,14 @@
             <DeleteModal
             :rowId="rowId"
             @changevalue='closemodal'
-            @refetchinterviews='fetchInterviews'
+            @refetchinterviews='paginatedInterviews'
             @refetch='fetch'
             />
         </div>
         <div v-if="addInterview">
             <Modal
             :editedInterview="editedInterview"
-            @refetchinterviews='fetchInterviews'
+            @refetchinterviews='paginatedInterviews'
             @refetch='fetch'
             @changingvalue='closemodal'
             />
@@ -325,7 +339,7 @@ export default defineComponent({
 
     const pagination = ref({
       page: 1,
-      limit: 2,
+      limit: 3,
       rowsNumber: 20,
       filter: ''
     })
@@ -337,32 +351,49 @@ export default defineComponent({
         filter: pagination.value.filter
       }
     })
+    const x = ref(paginatedData.value.page)
+    const y = ref(paginatedData.value.limit)
 
-    const { result: paginatedResult, fetchInterviews: paginatedInterviews, total } = useFetchPaginatedInterviews(paginatedData)
+    const change = () => {
+      pagination.value.limit = paginatedData.value.limit
+      if (paginatedData.value.limit > total.value) {
+        console.log('skata')
+        y.value = total.value
+      } else {
+        y.value = paginatedData.value.limit
+      }
+    }
+
+    watch(paginatedData, () => {
+      console.log('LIMIT CHANGED: ', paginatedData.value.limit)
+    })
+
+    const { result: paginatedResult, fetchInterviews: paginatedInterviews, total, offset } = useFetchPaginatedInterviews(paginatedData)
     watch(total, () => {
       pagination.value.rowsNumber = total.value
     })
 
     const subtract = () => {
-    //   if (pagination.value.page - pagination.value.limit <= 0) return
-
-      pagination.value.page = pagination.value.page - pagination.value.limit
-    //   if (pagination.value.limit > pagination.value.page) {
-    //     pagination.value.limit = pagination.value.limit - pagination.value.page
-    //     console.log('pagination value rows', pagination.value.limit)
-    //   } else {
-    //     pagination.value.limit = pagination.value.limit - pagination.value.page
-    //   }
+      if (pagination.value.page - 1 <= 0) return
+      pagination.value.page = pagination.value.page - 1
+      if (x.value === y.value) {
+        y.value = y.value - 1
+      } else if (y.value === total.value && x.value !== total.value) {
+        y.value = offset.value
+      } else {
+        y.value = y.value - pagination.value.limit
+      }
+      x.value = x.value - pagination.value.limit
     }
 
     const add = () => {
-      if (pagination.value.page > pagination.value.limit - pagination.value.page) return
-      pagination.value.page = pagination.value.page + pagination.value.limit
-
-      if (pagination.value.limit < pagination.value.page) {
-        pagination.value.limit = total.value
+      if (x.value + pagination.value.limit > total.value) return
+      pagination.value.page = pagination.value.page + 1
+      x.value = x.value + pagination.value.limit
+      if (y.value + pagination.value.limit > total.value) {
+        y.value = total.value
       } else {
-        pagination.value.limit = pagination.value.limit + pagination.value.page
+        y.value = y.value + pagination.value.limit
       }
     }
     return {
@@ -388,7 +419,11 @@ export default defineComponent({
       paginatedResult,
       paginatedInterviews,
       total,
-      paginatedData
+      paginatedData,
+      x,
+      y,
+      offset,
+      change
     }
   }
 })
