@@ -120,6 +120,7 @@ export function useFetchPaginatedInterviews (variables: Ref<PaginationInputData>
   const result = ref<Interview[]>([])
   const loading = ref(false)
   const total = ref<number>(0)
+  const offset = ref<number>(0)
 
   const fetchInterviews = async () => {
     try {
@@ -141,9 +142,10 @@ export function useFetchPaginatedInterviews (variables: Ref<PaginationInputData>
       }) as unknown as GraphQLResponse <{ paginatedInterviews: PaginatedInterviews}>
 
       if (response.data.data) {
-        console.log('CHECK THIS OUT', response.data.data.paginatedInterviews)
+        // console.log('CHECK THIS OUT', response.data.data.paginatedInterviews)
         result.value = response.data.data.paginatedInterviews.context
         total.value = response.data.data.paginatedInterviews.total
+        offset.value = response.data.data.paginatedInterviews.offset
       }
     } catch (e) {
       console.log(e)
@@ -155,13 +157,14 @@ export function useFetchPaginatedInterviews (variables: Ref<PaginationInputData>
     await fetchInterviews().catch(e => console.log(e))
   })
   watch(variables, async () => {
-    console.log('variables are', variables)
+    // console.log('variables are', variables)
     await fetchInterviews()
   })
   return {
     result,
     loading,
     total,
+    offset,
     fetchInterviews
   }
 }
