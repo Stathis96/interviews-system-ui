@@ -133,7 +133,7 @@
             <label class="label">
               <span class="label-text">Bio</span>
             </label>
-            <!-- <input type="file" name="upload" accept="application/pdf" @change="call"/> -->
+            <!-- <input type="file" name="upload" accept="application/pdf"/> -->
             <input type="text" class="input input-sm input-bordered" v-model="interviewData.bio">
            </div>
 

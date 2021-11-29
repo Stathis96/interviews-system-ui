@@ -1,13 +1,13 @@
 <template>
     <div class="w-full bg-base-300 py-10">
-        <div class="mx-auto h-screen container bg-white dark:bg-gray-800 dark:bg-gray-800 shadow rounded" style="height:60vh">
+        <div class="w-full mx-auto h-screen container bg-white dark:bg-gray-800 dark:bg-gray-800 shadow rounded" style="height:60vh">
             <div class="flex flex-col lg:flex-row p-4 lg:p-8 justify-between items-start lg:items-stretch w-full">
                 <div class="w-full lg:w-1/3 flex flex-col lg:flex-row items-start lg:items-center">
 
                     <div class="flex items-center relative">
                       <!-- Search Input -->
-                      <input class="border-2 border-neutral bg-red transition h-10 px-5 pr-16 rounded-md focus:outline-none w-full text-black text-lg " type="search" name="search" placeholder="Search" />
-                      <button type="submit" class="absolute right-2 top-3 mr-4">
+                      <input class="border-2 border-neutral bg-red transition h-10 px-5 pr-16 rounded-md focus:outline-none w-full text-black text-lg " type="text" name="search" placeholder="Search" v-model="filter"/>
+                      <button type="button" class="absolute right-2 top-3 mr-2">
                         <svg class="text-black h-5 w-5 fill-current" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;" xml:space="preserve" width="512px" height="512px">
                           <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
                         </svg>
@@ -159,7 +159,7 @@
 
                             <!-- For Result -->
                             <td class="pr-6">
-                                <div v-if="result.result === null" class="w-3 h-3 rounded-full bg-success"></div>
+                                <div v-if="result.result === null || result.result === ''" class="w-3 h-3 rounded-full bg-success"></div>
                                 <div v-else class="w-3 h-3 rounded-full bg-red-600"></div>
                             </td>
                             <!-- For result -->
@@ -353,19 +353,23 @@ export default defineComponent({
     })
     const x = ref(paginatedData.value.page)
     const y = ref(paginatedData.value.limit)
+    const filter = ref(paginatedData.value.filter)
 
     const change = () => {
       pagination.value.limit = paginatedData.value.limit
       if (paginatedData.value.limit > total.value) {
-        console.log('skata')
         y.value = total.value
       } else {
         y.value = paginatedData.value.limit
       }
     }
+    watch(filter, () => {
+      pagination.value.filter = filter.value
+    })
 
     watch(paginatedData, () => {
       console.log('LIMIT CHANGED: ', paginatedData.value.limit)
+      console.log('Filter Changed', paginatedData.value.filter)
     })
 
     const { result: paginatedResult, fetchInterviews: paginatedInterviews, total, offset } = useFetchPaginatedInterviews(paginatedData)
@@ -409,6 +413,7 @@ export default defineComponent({
       showBullets,
       openSide,
       rowId,
+      filter,
       moment,
       editedInterview,
       emptyInterview,
