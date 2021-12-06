@@ -377,6 +377,16 @@ export default defineComponent({
       pagination.value.rowsNumber = total.value
     })
 
+    // const nullToggle = ref(false)
+    // const visibleData = ref<Interview[]>([])
+    // watch(nullToggle, () => {
+    //   if (nullToggle.value === true) {
+    //     visibleData.value = res.value
+    //   } else {
+    //     visibleData.value = paginatedResult.value
+    //   }
+    // })
+
     const subtract = () => {
       if (pagination.value.page - 1 <= 0) return
       pagination.value.page = pagination.value.page - 1
