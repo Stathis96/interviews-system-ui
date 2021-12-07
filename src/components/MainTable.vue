@@ -304,7 +304,7 @@ export default defineComponent({
       comments: [''],
       toStore: [''],
       result: '',
-      bio: ''
+      bio: { path: '', name: '' }
     })
     const showBullets = ref(false)
     const showModal = ref(false)
