@@ -15,5 +15,5 @@ export default interface InterviewInputData{
   comments: string[],
   toStore : string[],
   result: string,
-  bio: string
+  bio?: string
 }

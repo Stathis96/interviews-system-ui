@@ -1,3 +1,5 @@
+import PdfFile from './PdfFile'
+
 export default interface Interview{
   interviewId: string,
   date: Date,
@@ -16,5 +18,5 @@ export default interface Interview{
   comments: string[],
   toStore : string[],
   result: string,
-  bio: string
+  bio?: PdfFile
 }
