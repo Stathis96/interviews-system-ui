@@ -133,23 +133,23 @@
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.age}}</td>
 
                             <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
-                                <input type="checkbox" v-if="result.healthCertificate" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
-                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
+                                <input type="checkbox" v-if="result.healthCertificate" class="relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
+                                <input type="checkbox" v-else class="relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
                             </td>
 
                             <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
-                                <input type="checkbox" v-if="result.workPermit" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
-                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
+                                <input type="checkbox" v-if="result.workPermit" class="relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
+                                <input type="checkbox" v-else class="relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
                             </td>
 
                             <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
-                                <input type="checkbox" v-if="result.efetSeminars" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
-                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
+                                <input type="checkbox" v-if="result.efetSeminars" class="relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
+                                <input type="checkbox" v-else class="relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
                             </td>
 
                             <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
-                                <input type="checkbox" v-if="result.vaccinated" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
-                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
+                                <input type="checkbox" v-if="result.vaccinated" class="relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
+                                <input type="checkbox" v-else class="relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
                             </td>
 
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.doses}}</td>
@@ -164,7 +164,14 @@
                             </td>
                             <!-- For result -->
 
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.bio}}</td>
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">
+                              <div v-if="result.bio !== null">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" @click="sendMessage">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                              </div>
+                                <!-- <div v-else class="w-3 h-3 rounded-full bg-red-600"></div> -->
+                            </td>
 
                             <td class="pr-8 relative">
                                 <div v-if="showBullets" class="opacity-0 fixed inset-0" @click="showrow"></div>
@@ -313,6 +320,10 @@ export default defineComponent({
     const rowId = ref('')
     const editedInterview = ref<Interview>()
 
+    const sendMessage = () => {
+      console.log('sent')
+    }
+
     const toggleModal = (id: string) => {
       showModal.value = !showModal.value
       showBullets.value = false
@@ -438,7 +449,8 @@ export default defineComponent({
       x,
       y,
       offset,
-      change
+      change,
+      sendMessage
     }
   }
 })

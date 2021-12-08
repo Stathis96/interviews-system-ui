@@ -188,10 +188,12 @@ export default defineComponent({
       console.log('show files', files.value)
       if (files.value) {
         console.log('mpika sto deutero meros', files.value)
-        for await (const af of files.value) {
-          const data = await encodeToBase64(af as File)
+        for await (const file of files.value) {
+          console.log('eisodos sto for await')
+          const data = await encodeToBase64(file as File)
           if (data) {
             tobase64.value = data
+            console.log('show my data', data)
             console.log('deixe ka ito tobase64', tobase64.value)
           }
         }
@@ -226,7 +228,7 @@ export default defineComponent({
       comments: [''],
       toStore: [''],
       result: '',
-      bio: 'data:application/pdf;JVBERi0xLjQKMSAwIG9iago8PAovQ3JlYXRvciAoT3JhY2xlMTFnUjEgQVMgUmVwb3J0cyBTZXJ2aWNlcykKL0NyZWF0aW9uRGF0ZSAoRDoyMDIxMDkxNzE0NDU1MykKL01vZERhdGUgKEQ6MjAyMTA5MTcxNDQ1NTMpCi9Qcm9kdWNlciAoT3JhY2xlIFBERiBkcml2ZXIpCi9UaXRsZSAoRm9ybSBFMSAyMDIxKQovQXV0aG9yIChBLkEuRC5FLiAgLyAgR0Rpci4gZS1Hb3YgLyBTLlMuKQo+PgplbmRvYmoKNSAwIG9iago8PC9MZW5ndGggNiAwIFIKL0ZpbHRlciBbL0FTQ0lJODVEZWNvZGUgL0ZsYXRlRGVjb2RlXQo+PgpzdHJlYW0KR2IhI1s5b24nZiUpKU8+a1poTi4sNSNAXj05S0olRzY3RSZHKENdZD9GaWpgIzInY105RTBINGxILGdzQlFmRyJCT20sbE9Xa2toCkFOdUw/XiYncDprPTg5Ui1pKkgnVnRVOlExQi9TO0lbJ0E2cSJVb11tZTs6bDhELnUjQHJXcW5VRyRNUl9qSEFacDtubU4kbmhdWwopLyIrVFFTRSVmVktwQl9VYzleUDI4P1o5InFsajtqNUBzNU0qXWcvQj41ZSJPNWhMMytjUmVaYTYyRkxrVCdpMWhFOmNsZ2wkQSUKS0E2PUw0YW43aSpldDljaElkX3BZS2xeYE4pOj8wUD1zIlU+JkUkKWdHSSEtMS9vUkNRdC9hKHIlKT89czdINzZqKyg6YVkyKS4wCiswXE41TzQ/YXApdUhmJEhQPkcxbHE/aDplUCovZ0crYmMhOWg0bE8iXnRJWEE0OGglSlFtbV0kNV5PZzQtR2RhP0g7WkYmQEE0OQozOUNYXyd0VUBjZyU3Jk5jZVs7W3AkR2tYZ1QpRyIiU21rSyo+IipbXiVMImlDWlUlPFNeKWhLMjQ3bkkjaS5sQGJBODljM20mM3IKImYoIz03S3JSVidiSCEhXHAsYFlCKiNOOj50K0k9Pi9kWj5YLiElVSJTbDxYUERTWEhBNTFEJS1Bamk9MlReTmozUDAjK19OWCI6Ck8hLlNtNyQyUT1XZThOQCpdXlpXUlQsOC88T2pxLl4sP2k9QE9FLSFGcyZyWWhrWlg5YDNscnUuIVFxM2xLS1NOOCszJUBoOyteTApqT1YqJSNIYjhMPjMmVSlYbGYncjplSj0ma2tZNjYka19YVE5dXidWJihwUE9gXzZpLSk9ck5sU0EzdCRyXiUucWUsRFpFVipiTDMKbGMmalk3WEhlS0tQMzZTUlxRXCNXRUk8aWFMUzEoQ1BsSGBkQ19kbGMsbFVpOFAnJCYvMysuMVYicFZjOnJTN11eW2RgJ3I5YUdQCkllOyFlKVBmY1lQVDxJKjlMU0suIXFbbm4jTCgjVlw/UEtKJD03OkoiJm01PiUnbSszMmZoaCxBJmNZMU4+WDZDYSZdSiJGUWpkVQptUTBFZTxtNlMrOUErVXU0Ly88TENDRE8uWmFZKGJwWT5ZVCZUMERaSEhjS11tKkdSVCprSUAjKUhxTjJkbFFpYEVHVCNxLFcoXzMKYm45PCJnIiwzazVEKEBha2FxJVg+SWs5QCxqOlgpNnFYT2NNPWtBIzY9PmcoWUhlPGYiQEk2bkwrYjlITkUkVTVyaUZiOnFhUiNbCmVEI2IuW0RWTWAmJDlZITBYMy5nIWFqPmw9cCkyalhZWGVvbzM0YD0pS1w3T3BCZzM8P2dANylbWy1ncUAhImQlOjZScC5BO3ByKQolYGZZSlpxZSxTbFE3NmpgVnUsdT0vMUEjNlkzcjZhVDQpSDk/KUYvKlElR09RcytRO2xSPnNOPVdVXSNqJmRJNzEsLW5HY1AsTS8KaGU+Zy4qa11QKVYzWGtNUlZVJjMwOWFwPDxQJyFqbTk2bW5TJ2NeOzE+ZSJzQVohNEw6bVowRXFaKzU7NFk3cUUhRWYwXS9AS0lnCmxjJyNGWVB0LTgtViU4S2BRLUhfaFthUTYtXl5rYmgzTTVQSmozUFglTD9bJCpVbzhwWUQ4NCImRjFlQzddcnA7VHFzLm9fSkxqVApNUXNjayMwVj1QTjZbMD5qYjAib2hUM0RTQEhfZFBaX1NiO2lRMFcsT2BDdW5yb1NPbmpPVG49Ij0wUW9yPk5QXSI8OmohYGNLIjwKUVBhbCQmQ3ErL0wiKT0kLSJUQkBxUiRKX1AmWVpnNStWa202RilBMldTMGNhUSlLKUFlJnQnbUBGPFAsNCk/bG1HXnQsSkM8cDJhCihVc19KQ3Anbm1VUDhCKEVyKF5sKl1DM146cFZQJE1LMlFEUVpeT0lTNVBQWm5RLlU5RT5kTlJXNEA1VFhQMFQqPmkiQCtWcitpVwpFaXFuYTtiZCMrR05jZGYyQEtgaH4+CmVuZHN0cmVhbQplbmRvYmoKNiAwIG9iagoxNTQyCmVuZG9iagoxMCAwIG9iago8PAovVHlwZSAvWE9iamVjdAovU3VidHlwZSAvSW1hZ2UKL05hbWUgL2ltMQovV2lkdGggMzY4Ci9IZWlnaHQgMzc2Ci9CaXRzUGVyQ29tcG9uZW50IDgKL0NvbG9yU3BhY2UgL0RldmljZVJHQgovRmlsdGVyIFsvQVNDSUk4NURlY29kZSAvRENURGVjb2RlXSAKL0xlbmd0aCAxMSAwIFIKPj4Kc3RyZWFtCnM0SUEwISJfYWw4T2BbXCE8PCojISEqJyJzNFtOQCEhKiokITxFMyUhPEUzJSE8RTMlITxFMyUhPEUzJSE8RTMlITxFMyUhPEUzJQohPEUzJSE8RTMlITxFMyUhPEUzJSE8RTMlITxFMyUhPEUzJSFXVW1TNk5JMmchPEUzJSE8RTMlITxFMyUhPEUzJSE8RTMlITxFMyUKITxFMyUhPEUzJSE8RTMlITxFMyUhPEUzJSE8RTMlITxFMyUhPEUzJSE8RTMlITxONTkhImZKO0dRRGFjIT9xTEYmSE10RyFXVSg8CipybDlBIlRcVykhPEUzJHohISEhIiFXclEvInBZRD8kNEhtUCE0PEA8IVdgQiohWCZULyJVInIuISEuS0shV3JFKiZIcmRqMGdRIVcKOy4wXFJFPjEwWk9lRSUqNkYiP0E7VU90WjFMYkJWI21xRmEoYD01PC03OjJqLlBzIkAyYE5mWTZVWEA0N24/M0Q7Y0hhdD0nL1UvCkBxOS5fQjR1IW9GKilQSkdCZUNaSzducjVMUFVlRVAqOyxxUUMhdSxSXEhSUVY1Qy9oV04qODFbJ2Q/T1xASzJmX28wTzZhMmxCRgpkYVFecmYlOFItZz5WJk9qUTVPZWtpcUMmbygyTUhwQG5AWHFaIko2KnJ1P0QhPEUzJSE8RTMlITw8KiIhISEhIiFXclEvInBZRD8KJDRIbVAhNDxDPSFXYD8qIjlTYzMiVSJyLiE8UkhGITxOPzgiOWZyJyJxajQhI0BWVGMrdTRdVCdMSXFVWiwkX2sxSypdV0BXS2onCigqa2BxLTFNY2cpJmFoTC1uLVcnMkUqVFUzXlo7KDdScCFAOGxKXGg8YGBDKz4lOylTQW5QZGtDMytLPkcnQTFWSEBnZCZLbmJBPQpNMklJW1BhLlEkUiRqRDtVU09gYFZsNlNwWkVwcEdbXldjV10jKUEnYFEjcz5haWAmXGVDRS4lZlwsITxqNWY9YWtOTTBxbygyTUgKcEBuQFhxWiM3TCRqLU0xIVlHTUghJ15KX24wayNnISU9UyEhJT1TISElPVMhISU9UyEhJT1TISElPVMhISU9U1YoXU9KUjBESSo9Cm0hJkkwIlNfb3JNSEBmaWcwWUZVLWowSkwsYk8kVTRbOGVZbnBVQV0jT01bMHJjZT5tcnJAWktKJiwpS0JiMSJfPXJzMSZYMkZjNQohMT9WUGxoUFZkaFMqQEZEYTMwaSlUVmQ0LWNYSUJGOGw1MStvMi08YVpvYztxL0peRkxyU0BsSSVPWl9kREdjVURlSkk2RExQKHMKSVU7ckJuU2U9dVxjLyo2Y2k0ITxrbDFZUilaSXQwWi5tX0tUJjgsNmJzMjFGMEQ6azBQQUJrNk5rYCU2YC9iTE9ycj9PTmo3V0VQCiwuXDs/XlRjVl5iUHFQcVVKZ1V1ciQrR3ItMyF0LGNnLjM+cFomcjNcO14uYUw/Lyc3W20pZiheV1hmTFRBTyE9NFsoZUhpWFNPSQpmYChxYWJQT2YlVEErX20hKjhlVV48YkwiJHFFT2hrK0QzYnFgIiVObylBXTJyXCIzTkp0KWJWP09JUi9MYGEiZV8qcD9BWUpiQk4KcFZAN0s0W0JoWVUlKVhsJU5QNkdVXEozYGhtNEU/cnJBJU5acSdoJnI1SCU4I0VLQD5DVGZxWmpFOEZrMnM4LE9aUzFcJ0NjajwuClQqKFx0SHIvKmFLZyRSQXIxJ0BockNQPUJYdC5pZTRyYTl0YFo+cDszO3ApTUxQJWM0cGdqQylhaEBJRlwkc3RdVmwrVEA9PXRidApNUFRRPWI6P3ViN2JsSW4+NSUqbFxRPyVzMjY/OEpENVInVk1fPU4wUThZITo8WzA1blFYTTAkbUc5P0tqaTJfPzpULlwjVTsiQlgKYk5mUGppVnAkLDVLKjlQa09tWzIhIUcrVlhoSSF1aDs+UixeXF5JdEJtaFJMMi9SIlpNcj9sLVMvaTNHPT09PChhKFInM0YrQCVyCj5faTRuNDgsXVFVQWs0JSV0WyJTNUE3Z2JdX0g4PGNvYSVhaiZ0bDtYZVpMJlNYXW8jb0g0XW9ESyVuWChzZ2khbjQ5MShqN1tnIQohLm86a2JNTmVYSU4vOE1yckQqVVNEcS4mcGFLIypwXHQ0JitvO11HQC8pY0lqPD1PJyNfKnJaZjpQZiY5KTxXJEtERnMx'
+      bio: ''
     })
 
     const { createInterview } =
@@ -236,9 +238,12 @@ export default defineComponent({
     useInterviewUpdateMutations(interviewData.value)
 
     const submitAdd = () => {
+      interviewData.value.bio = tobase64.value
       if (props.editedInterview?.interviewId === '') {
         createInterview().then((res) => {
           console.log('created', res)
+          // console.log('what was sent', interviewData.value)
+          // console.log('show from submit', tobase64.value)
           emit('refetchinterviews')
           emit('refetch')
           cancelAll()
@@ -248,7 +253,7 @@ export default defineComponent({
       } else {
         updateInterview(props.editedInterview?.interviewId as string).then((res) => {
           console.log('updated', res)
-          console.log('what was sent', interviewData.value)
+          // console.log('what was sent', interviewData.value)
           emit('refetchinterviews')
           emit('refetch')
           cancelAll()
