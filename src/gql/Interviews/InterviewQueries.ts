@@ -102,3 +102,8 @@ export const getInterview = gql`
     }
   }
 `
+export const downloadFile = gql`
+  query downloadFile($file: PdfFile!, $downloadFileId: String!) {
+    downloadedFile: downloadFile(file: $file, id: $downloadFileId)
+  }
+`

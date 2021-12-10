@@ -2,10 +2,11 @@ import { ref, onMounted, watch, Ref } from 'vue'
 import { print } from 'graphql'
 import Interview from '../interfaces/Interview'
 import { GraphQLResponse } from '../interfaces/AxiosResponse'
-import { getAllInterviews, getInterview, getNullInterviews, getPaginatedInterviews } from '../gql/Interviews/InterviewQueries'
+import { downloadFile, getAllInterviews, getInterview, getNullInterviews, getPaginatedInterviews } from '../gql/Interviews/InterviewQueries'
 import { api } from '../boot/axios'
 import PaginationInputData from '../interfaces/classes/PaginationInputData'
 import PaginatedInterviews from '../interfaces/PaginatedInterviews'
+import PdfFile from '../interfaces/PdfFile'
 
 export function useFetchInterviews () {
   const result = ref<Interview[]>([])
@@ -166,5 +167,44 @@ export function useFetchPaginatedInterviews (variables: Ref<PaginationInputData>
     total,
     offset,
     fetchInterviews
+  }
+}
+
+export function useFetchDownloadFile () {
+  const result = ref<string>()
+  const loading = ref(false)
+
+  const fetchFile = async (id: string, file: PdfFile) => {
+    try {
+      loading.value = true
+      const response = await api({
+        url: '',
+        method: 'post',
+        data: {
+          query: print(downloadFile),
+          variables: {
+            downloadFileId: id,
+            file: file
+          }
+        }
+      }) as unknown as GraphQLResponse <{ downloadedFile: string}>
+
+      if (response.data.data) {
+        return response.data.data.downloadedFile
+      }
+    } catch (e) {
+      console.log(e)
+    } finally {
+      loading.value = false
+    }
+  }
+  // onMounted(async () => {
+  //   await fetchFile().catch(e => console.log(e))
+  // })
+
+  return {
+    result,
+    loading,
+    fetchFile
   }
 }
