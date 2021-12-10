@@ -22,7 +22,7 @@
             <label class="label">
               <span class="label-text">Date</span>
             </label>
-            <input type="date" class="input input-sm input-bordered" v-model="interviewData.date">
+            <input type="datetime-local" class="input input-sm input-bordered" v-model="interviewData.date">
             </div>
 
             <div class="form-control">
@@ -269,7 +269,7 @@ export default defineComponent({
     })
     const filledFields = (filledInterview :Interview) => {
       // interviewData.value = { ...filledInterview, date: moment(filledInterview.date.toString()).format('YYYY-MM-DD') }
-      interviewData.value.date = moment(filledInterview.date.toString()).format('YYYY-MM-DD')
+      interviewData.value.date = moment(filledInterview.date.toString()).format('YYYY-MM-DD, h:mm a')
       interviewData.value.city = filledInterview.city
       interviewData.value.area = filledInterview.area
       interviewData.value.firstName = filledInterview.firstName

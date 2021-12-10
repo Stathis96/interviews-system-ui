@@ -124,7 +124,7 @@
                     <tbody>
                         <tr class="h-24 border-gray-300 border-b"  v-for="result in paginatedResult" :key="result.id" :result="result" v-if="showNotNull">
 
-                            <td class="pl-4 text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{moment(result?.date).format('MMMM Do YYYY')}}</td>
+                            <td class="pl-4 text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{moment(result?.date).format('MMMM Do YYYY, h:mm a')}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.firstName}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.lastName}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.city}}</td>
@@ -160,81 +160,21 @@
                             <!-- For Result -->
                             <td class="pr-6">
                                 <div v-if="result.result === null || result.result === ''" class="w-3 h-3 rounded-full bg-success"></div>
+                                <div v-else-if="result.result === 'Standby' || result.result === 'StandBy' || result.result === 'standby' || result.result === 'standBy' || result.result === 'stand by'
+                                || result.result === 'Stand By' || result.result === 'Stand by'
+                                " class="w-3 h-3 rounded-full bg-secondary"></div>
                                 <div v-else class="w-3 h-3 rounded-full bg-red-600"></div>
                             </td>
                             <!-- For result -->
 
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">
-                              <div v-if="result.bio !== null">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" @click="sendMessage">
+                              <div v-if="result.bio.name !== ''">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" @click="sendMessage(result)">
                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
                               </div>
                                 <!-- <div v-else class="w-3 h-3 rounded-full bg-red-600"></div> -->
                             </td>
-
-                            <td class="pr-8 relative">
-                                <div v-if="showBullets" class="opacity-0 fixed inset-0" @click="showrow"></div>
-                                <div v-if="rowId === result.interviewId && showBullets" class="dropdown-content mt-8 absolute left-0 -ml-12 shadow-md z-10 w-32">
-                                    <ul class="bg-white dark:bg-gray-800 shadow rounded py-1">
-                                        <li class="cursor-pointer text-gray-600 dark:text-gray-400 text-sm leading-3 tracking-normal py-3 hover:bg-indigo-700 hover:text-white px-3 font-normal" @click="openCreateDialog(result)">Edit</li>
-                                        <li class="cursor-pointer text-gray-600 dark:text-gray-400 text-sm leading-3 tracking-normal py-3 hover:bg-indigo-700 hover:text-white px-3 font-normal" @click="toggleModal(result.interviewId)">Delete</li>
-                                    </ul>
-                                </div>
-                                <button class="text-gray-500 rounded cursor-pointer border border-transparent focus:outline-none">
-                                    <svg xmlns="http://www.w3.org/2000/svg" @click="openSide(result.interviewId)" class="icon icon-tabler icon-tabler-dots-vertical dropbtn" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" />
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="12" cy="19" r="1" />
-                                        <circle cx="12" cy="5" r="1" />
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <tr class="h-24 border-gray-300 border-b"  v-for="result in res" :key="result.id" :result="res" v-else>
-
-                            <td class="pl-4 text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{moment(result?.date).format('MMMM Do YYYY')}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.firstName}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.lastName}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.city}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.area}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.mobile}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.age}}</td>
-
-                            <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
-                                <input type="checkbox" v-if="result.healthCertificate" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
-                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
-                            </td>
-
-                            <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
-                                <input type="checkbox" v-if="result.workPermit" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
-                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
-                            </td>
-
-                            <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
-                                <input type="checkbox" v-if="result.efetSeminars" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
-                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
-                            </td>
-
-                            <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
-                                <input type="checkbox" v-if="result.vaccinated" class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
-                                <input type="checkbox" v-else class="cursor-pointer relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
-                            </td>
-
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.doses}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.shifts}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.comments}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.toStore}}</td>
-
-                            <!-- For Result -->
-                            <td class="pr-6">
-                                <div v-if="result.result === null" class="w-3 h-3 rounded-full bg-success"></div>
-                                <div v-else class="w-3 h-3 rounded-full bg-red-600"></div>
-                            </td>
-                            <!-- For result -->
-
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.bio}}</td>
 
                             <td class="pr-8 relative">
                                 <div v-if="showBullets" class="opacity-0 fixed inset-0" @click="showrow"></div>
@@ -275,16 +215,26 @@
             @changingvalue='closemodal'
             />
         </div>
+
+        <div v-if="showPdf" class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex" @click="hidePdf">
+          <embed
+            class="w-3/6 h-5/6"
+            type="text/html"
+            :src="`data:application/pdf;base64,${shownFile}`"
+          />
+        </div>
+        <div v-if="showPdf" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from '@vue/runtime-core'
-import { useFetchInterviews, useFetchNullInterviews, useFetchPaginatedInterviews } from '../hooks/useFetchInterviews'
+import { useFetchDownloadFile, useFetchInterviews, useFetchNullInterviews, useFetchPaginatedInterviews } from '../hooks/useFetchInterviews'
 import DeleteModal from './DeleteModal.vue'
 import Modal from './Modal.vue'
 
 import moment from 'moment'
 import Interview from '../interfaces/Interview'
+import PdfFile from '../interfaces/PdfFile'
 
 export default defineComponent({
   name: 'CompactTableWithActionsAndSelect',
@@ -317,11 +267,27 @@ export default defineComponent({
     const showModal = ref(false)
     const addInterview = ref(false)
     const showNotNull = ref(true)
+    const showPdf = ref(false)
     const rowId = ref('')
     const editedInterview = ref<Interview>()
+    const shownFile = ref<string>('')
 
-    const sendMessage = () => {
-      console.log('sent')
+    const sendMessage = async (interview: Interview) => {
+      console.log('check the id', interview.interviewId)
+      showPdf.value = true
+      const { fetchFile } = useFetchDownloadFile()
+
+      await fetchFile(interview.interviewId, interview.bio as PdfFile)
+        .then((res) => {
+          if (res === undefined) return
+          shownFile.value = res
+          console.log('response is', res)
+        })
+    }
+
+    const hidePdf = () => {
+      console.log('show value', showPdf.value)
+      showPdf.value = !showPdf.value
     }
 
     const toggleModal = (id: string) => {
@@ -335,6 +301,7 @@ export default defineComponent({
     }
     const showrow = () => {
       showBullets.value = !showBullets.value
+      console.log('hello')
     }
     const openCreateDialog = (interview: Interview) => {
       addInterview.value = !addInterview.value
@@ -450,82 +417,13 @@ export default defineComponent({
       y,
       offset,
       change,
-      sendMessage
+      sendMessage,
+      showPdf,
+      shownFile,
+      hidePdf
     }
   }
 })
-// methods: {
-//   dropdownFunction (event) {
-//     const dropdowns = document.getElementsByClassName('dropdown-content')
-//     let i
-//     const list = event.currentTarget.parentElement.parentElement.getElementsByClassName('dropdown-content')[0]
-//     for (i = 0; i < dropdowns.length; i++) {
-//       dropdowns[i].classList.add('hidden')
-//     }
-//     list.classList.toggle('hidden')
-//   },
-//   documentClick (event) {
-//     if (!event.target.matches('.dropbtn')) {
-//       const dropdowns = document.getElementsByClassName('dropdown-content')
-//       let i
-//       for (i = 0; i < dropdowns.length; i++) {
-//         const openDropdown = dropdowns[i]
-//         openDropdown.classList.add('hidden')
-//       }
-//     }
-//   },
-//   checkAll (event) {
-//     const rows = event.currentTarget.parentElement.parentElement.parentElement.nextElementSibling.children
-//     for (let i = 0; i < rows.length; i++) {
-//       if (event.currentTarget.checked) {
-//         rows[i].classList.add('bg-gray-100')
-//         const checkbox = rows[i].getElementsByTagName('input')[0]
-//         if (checkbox) {
-//           checkbox.checked = true
-//         }
-//       } else {
-//         rows[i].classList.remove('bg-gray-100')
-//         const checkbox = rows[i].getElementsByTagName('input')[0]
-//         if (checkbox) {
-//           checkbox.checked = false
-//         }
-//       }
-//     }
-//   },
-//   tableInteract (event) {
-//     const single = event.currentTarget.parentElement.parentElement
-//     single.classList.toggle('bg-gray-100')
-//   },
-//   pageView (val) {
-//     const text = document.getElementById('page-view')
-//     if (val) {
-//       if (this.$data.temp === 2) {
-//         this.$data.temp = 0
-//       } else {
-//         this.$data.temp = this.$data.temp + 1
-//       }
-//     } else if (this.$data.temp !== 0) {
-//       this.$data.temp = this.$data.temp - 1
-//     }
-//     switch (this.$data.temp) {
-//       case 0:
-//         text.innerHTML = 'Viewing 1 - 20 of 60'
-//         break
-//       case 1:
-//         text.innerHTML = 'Viewing 21 - 40 of 60'
-//         break
-//       case 2:
-//         text.innerHTML = 'Viewing 41 - 60 of 60'
-//     }
-//   }
-// },
-// created () {
-//   document.addEventListener('click', this.documentClick)
-// },
-// unmounted () {
-//   document.removeEventListener('click', this.documentClick)
-// },
-
 </script>
 
 <style lang="scss" scoped>
