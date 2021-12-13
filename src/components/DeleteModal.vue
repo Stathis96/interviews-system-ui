@@ -14,7 +14,7 @@
                     <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                   </svg>
                         <p class="text-xl font-bold py-4 ">Are you sure?</p>
-                        <p class="text-sm text-gray-500 px-8">Do you really want to delete this interview?This process cannot be undone</p>
+                        <p class="text-sm text-gray-500 px-8">Do you really want to delete this {{$props.sendingFile === undefined ? 'Interview' : 'Pdf File'}} ? This process cannot be undone</p>
              </div>
 
         <!--footer-->
@@ -32,14 +32,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/runtime-core'
-import { useInterviewDeleteMutations } from '../hooks/useInterviewsMutations'
+import { defineComponent, PropType, ref } from '@vue/runtime-core'
+import { useDeleteMutations, useInterviewDeleteMutations } from '../hooks/useInterviewsMutations'
+import PdfFile from '../interfaces/PdfFile'
 
 export default defineComponent({
   name: 'delete-modal',
   props: {
     rowId: {
       type: String,
+      required: false
+    },
+    sendingFile: {
+      type: Object as PropType<PdfFile>,
       required: false
     }
   },
@@ -50,16 +55,29 @@ export default defineComponent({
       emit('changevalue')
     }
     const { deleteInterview } = useInterviewDeleteMutations()
+    const { deleteFile } = useDeleteMutations()
+    console.log('filesent', props.sendingFile)
 
     const submitDelete = () => {
-      console.log('showmodal')
-      deleteInterview(props.rowId as string).then((res) => {
-        toggleModal()
-        console.log('deleted', res)
-        emit('refetchinterviews')
-      }).catch((err) => {
-        alert(err)
-      })
+      if (props.sendingFile === undefined) {
+        console.log('delete an interview')
+        deleteInterview(props.rowId as string).then((res) => {
+          toggleModal()
+          console.log('deleted', res)
+          emit('refetchinterviews')
+        }).catch((err) => {
+          alert(err)
+        })
+      } else {
+        deleteFile(props.sendingFile).then((res) => {
+          toggleModal()
+          console.log('delete a file')
+          console.log('deleted', res)
+          emit('refetchinterviews')
+        }).catch((err) => {
+          alert(err)
+        })
+      }
     }
     return {
       showModal,

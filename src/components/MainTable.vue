@@ -19,11 +19,9 @@
                 <!-- Pagination Stuff -->
                     <div class="flex items-center lg:border-l lg:border-r border-gray-300 py-3 lg:py-0 lg:px-6" v-if="showNotNull">
 
-                        <!-- <p class="text-base text-gray-600 dark:text-gray-400 pr-4" id="page-view">Records per Page </p> -->
                         <div class="dropdown dropdown-hover
                             bg-gray-200 border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm
                             mr-2">Records per Page
-                            <!-- <div class="m-1 btn">Records per Page</div> -->
                                 <select class="ml-6 mt-16 p-2 shadow menu dropdown-content bg-base-100 rounded-box w-20" v-model.number="paginatedData.limit" @click="change">
                                     <option value="3" selected>3</option>
                                     <option value="5">5</option>
@@ -46,22 +44,7 @@
                             </svg>
                         </a>
                     </div>
-                    <!-- List View - Grid View Changeable -->
-                    <!-- <div class="flex items-center lg:border-r border-gray-300 pb-3 lg:pb-0 lg:px-6">
-                        <div class="relative w-32 z-10">
-                            <div class="pointer-events-none text-gray-600 dark:text-gray-400 absolute inset-0 m-auto mr-2 xl:mr-4 z-0 w-5 h-5">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon cursor-pointer icon-tabler icon-tabler-chevron-down" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z"></path>
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                            </div>
 
-                            <select aria-label="Selected tab" class="focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray text-base form-select block w-full py-2 px-2 xl:px-3 rounded text-gray-600 dark:text-gray-400 appearance-none bg-transparent">
-                                <option>List View</option>
-                                <option>Grid View</option>
-                            </select>
-                        </div>
-                    </div> -->
                     <div class="lg:ml-6 flex items-center">
                     <!-- Button for Showing Interviews with NULL RESULT -->
                         <button class="bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showNotNull = !showNotNull">Interviews with Null Result</button>
@@ -167,15 +150,17 @@
                             </td>
                             <!-- For result -->
 
+                            <!-- For Bio -->
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">
                               <div v-if="result.bio.name !== ''">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" @click="sendMessage(result)">
                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
                               </div>
-                                <!-- <div v-else class="w-3 h-3 rounded-full bg-red-600"></div> -->
                             </td>
+                            <!-- For Bio -->
 
+                            <!-- For action bullets -->
                             <td class="pr-8 relative">
                                 <div v-if="showBullets" class="opacity-0 fixed inset-0" @click="showrow"></div>
                                 <div v-if="rowId === result.interviewId && showBullets" class="dropdown-content mt-8 absolute left-0 -ml-12 shadow-md z-10 w-32">
@@ -193,6 +178,8 @@
                                     </svg>
                                 </button>
                             </td>
+                            <!-- For action bullets -->
+
                         </tr>
                     </tbody>
                 </table>
@@ -273,7 +260,6 @@ export default defineComponent({
     const shownFile = ref<string>('')
 
     const sendMessage = async (interview: Interview) => {
-      console.log('check the id', interview.interviewId)
       showPdf.value = true
       const { fetchFile } = useFetchDownloadFile()
 
@@ -281,12 +267,10 @@ export default defineComponent({
         .then((res) => {
           if (res === undefined) return
           shownFile.value = res
-          console.log('response is', res)
         })
     }
 
     const hidePdf = () => {
-      console.log('show value', showPdf.value)
       showPdf.value = !showPdf.value
     }
 
@@ -301,7 +285,6 @@ export default defineComponent({
     }
     const showrow = () => {
       showBullets.value = !showBullets.value
-      console.log('hello')
     }
     const openCreateDialog = (interview: Interview) => {
       addInterview.value = !addInterview.value

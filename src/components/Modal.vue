@@ -111,13 +111,6 @@
 
             <div class="form-control">
             <label class="label">
-              <span class="label-text">Result</span>
-            </label>
-            <input type="text" class="input input-sm input-bordered" v-model="interviewData.result">
-            </div>
-
-            <div class="form-control">
-            <label class="label">
               <span class="label-text">Comments</span>
             </label>
             <textarea class="textarea h-24 textarea-bordered" v-model="interviewData.comments"></textarea>
@@ -132,11 +125,21 @@
 
             <div class="form-control">
             <label class="label">
+              <span class="label-text">Result</span>
+            </label>
+            <input type="text" class="input input-sm input-bordered" v-model="interviewData.result">
+            </div>
+
+            <div class="form-control">
+            <label class="label">
               <span class="label-text">Bio</span>
             </label>
             <input type="file" name="upload" accept="application/pdf" @change='handleEncoding($event)'/>
-            <!-- <input type="text" class="input input-sm input-bordered" v-model="interviewData.bio"> -->
+            <input type="text" class="input input-sm" v-model="interviewData.bio" v-if="interviewData.bio !== '.pdf'"/>
            </div>
+           <svg xmlns="http://www.w3.org/2000/svg" class="mt-10 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="interviewData.bio !== '.pdf' ">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" @click="toggleModal(editedInterview.bio)"/>
+            </svg>
 
           </div>
           <!--footer-->
@@ -153,6 +156,11 @@
     </div>
     <div v-if="showModal" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
   </div>
+          <div v-if="showDeleteModal">
+            <DeleteModal
+            :sendingFile="sendingFile"
+            />
+        </div>
 </template>
 
 <script lang="ts">
@@ -162,9 +170,15 @@ import { useInterviewMutations, useInterviewUpdateMutations } from '../hooks/use
 import InterviewInputData from '../interfaces/classes/InterviewInputData'
 import Interview from '../interfaces/Interview'
 import moment from 'moment'
+import DeleteModal from './DeleteModal.vue'
+import PdfFile from '../interfaces/PdfFile'
 
 export default defineComponent({
   name: 'regular-modal',
+  emits: ['refetch', 'refetchinterviews', 'changingvalue'],
+  components: {
+    DeleteModal
+  },
   props: {
     rowId: {
       type: String,
@@ -177,24 +191,28 @@ export default defineComponent({
   },
   setup (props, { emit }) {
     const showModal = ref(true)
+    const showDeleteModal = ref(false)
+    const sendingFile = ref<PdfFile>()
+
     const files = ref<any>()
     const tobase64 = ref<string>('')
+
+    const toggleModal = (file: PdfFile) => {
+      showDeleteModal.value = !showDeleteModal.value
+      console.log('show me the file', file)
+      sendingFile.value = file
+    }
 
     const handleEncoding = async (e: Event) => {
       console.log('mpika sto prwto meros', e.target)
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (e.target === null || (e.target as HTMLInputElement).files === null) return
       files.value = (<HTMLInputElement>e.target).files
-      console.log('show files', files.value)
       if (files.value) {
-        console.log('mpika sto deutero meros', files.value)
         for await (const file of files.value) {
-          console.log('eisodos sto for await')
           const data = await encodeToBase64(file as File)
           if (data) {
             tobase64.value = data
-            console.log('show my data', data)
-            console.log('deixe ka ito tobase64', tobase64.value)
           }
         }
       }
@@ -228,7 +246,7 @@ export default defineComponent({
       comments: [''],
       toStore: [''],
       result: '',
-      bio: ''
+      bio: '.pdf'
     })
 
     const { createInterview } =
@@ -242,8 +260,8 @@ export default defineComponent({
       if (props.editedInterview?.interviewId === '') {
         createInterview().then((res) => {
           console.log('created', res)
-          // console.log('what was sent', interviewData.value)
-          // console.log('show from submit', tobase64.value)
+          console.log('what was sent', interviewData.value)
+          console.log('show from submit', tobase64.value)
           emit('refetchinterviews')
           emit('refetch')
           cancelAll()
@@ -253,7 +271,8 @@ export default defineComponent({
       } else {
         updateInterview(props.editedInterview?.interviewId as string).then((res) => {
           console.log('updated', res)
-          // console.log('what was sent', interviewData.value)
+          console.log('what was sent', interviewData.value)
+          console.log('show from submit', tobase64.value)
           emit('refetchinterviews')
           emit('refetch')
           cancelAll()
@@ -268,8 +287,8 @@ export default defineComponent({
       }
     })
     const filledFields = (filledInterview :Interview) => {
-      // interviewData.value = { ...filledInterview, date: moment(filledInterview.date.toString()).format('YYYY-MM-DD') }
-      interviewData.value.date = moment(filledInterview.date.toString()).format('YYYY-MM-DD, h:mm a')
+      console.log('what i sent ', filledInterview)
+      interviewData.value.date = moment(filledInterview.date.toString()).format('YYYY-MM-DDThh:mm')
       interviewData.value.city = filledInterview.city
       interviewData.value.area = filledInterview.area
       interviewData.value.firstName = filledInterview.firstName
@@ -285,7 +304,8 @@ export default defineComponent({
       interviewData.value.comments = filledInterview.comments
       interviewData.value.toStore = filledInterview.toStore
       interviewData.value.result = filledInterview.result
-      // interviewData.value.bio = filledInterview.bio
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      interviewData.value.bio = `${filledInterview.bio?.name}.pdf`
     }
 
     const cancelAll = () => {
@@ -315,10 +335,14 @@ export default defineComponent({
       createInterview,
       submitAdd,
       cancelAll,
+      showDeleteModal,
       showModal,
       handleEncoding,
       files,
-      tobase64
+      tobase64,
+      toggleModal,
+      sendingFile
+
     }
   }
 
