@@ -4,7 +4,8 @@ import Interview from '../interfaces/Interview'
 import InterviewInputData from '../interfaces/classes/InterviewInputData'
 import { api } from '../boot/axios'
 import { GraphQLResponse } from '../interfaces/AxiosResponse'
-import { createInterviewMutation, deleteInterviewMutation, updateInterviewMutation } from '../gql/Interviews/InterviewMutations'
+import { createInterviewMutation, deleteFileMutation, deleteInterviewMutation, updateInterviewMutation } from '../gql/Interviews/InterviewMutations'
+import PdfFile from '../interfaces/PdfFile'
 
 export function useInterviewMutations (variables: InterviewInputData) {
   const result = ref<Interview>()
@@ -143,6 +144,41 @@ export function useInterviewDeleteMutations () {
   }
   return {
     deleteInterview,
+    result,
+    loading
+  }
+}
+
+export function useDeleteMutations () {
+  const result = ref<void>()
+  const loading = ref(false)
+
+  const deleteFile = async (file: PdfFile) => {
+    try {
+      loading.value = true
+      const response = await api({
+        url: '',
+        method: 'post',
+        data: {
+          query: print(deleteFileMutation),
+          variables: {
+            // data: variables
+            file: file
+          }
+        }
+      }) as unknown as GraphQLResponse <{ deleteFile: void}>
+
+      if (response.data.data) {
+        result.value = response.data.data.deleteFile
+      }
+    } catch (e) {
+      console.log(e)
+    } finally {
+      loading.value = false
+    }
+  }
+  return {
+    deleteFile,
     result,
     loading
   }

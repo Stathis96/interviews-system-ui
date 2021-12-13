@@ -51,3 +51,9 @@ mutation($deleteInterviewId: String!){
   deleteInterview: deleteInterview(id: $deleteInterviewId)
 }
 `
+
+export const deleteFileMutation = gql`
+mutation($file: PdfFile!) {
+  deleteFile: deleteFile(file: $file)
+}
+`
