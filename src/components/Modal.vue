@@ -137,9 +137,19 @@
             <input type="file" name="upload" accept="application/pdf" @change='handleEncoding($event)'/>
             <input type="text" class="input input-sm" v-model="interviewData.bio" v-if="interviewData.bio !== '.pdf'"/>
            </div>
+
            <svg xmlns="http://www.w3.org/2000/svg" class="mt-10 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="interviewData.bio !== '.pdf' ">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" @click="toggleModal(editedInterview.bio)"/>
             </svg>
+
+          <div class="p-6 card bordered col-start-4 col-end-5">
+            <div class="form-control">
+              <label class="cursor-pointer label">
+                <span class="label-text">Rejected</span>
+                <input type="checkbox" class="toggle toggle-primary" v-model="rejectionFlag">
+              </label>
+            </div>
+          </div>
 
           </div>
           <!--footer-->
@@ -193,6 +203,7 @@ export default defineComponent({
     const showModal = ref(true)
     const showDeleteModal = ref(false)
     const sendingFile = ref<PdfFile>()
+    const rejectionFlag = ref(false)
 
     const files = ref<any>()
     const tobase64 = ref<string>('')
@@ -249,6 +260,8 @@ export default defineComponent({
       bio: '.pdf'
     })
 
+    const holdingValuesTable = [{ id: '', value: '' }]
+
     const { createInterview } =
     useInterviewMutations(interviewData.value)
 
@@ -256,7 +269,20 @@ export default defineComponent({
     useInterviewUpdateMutations(interviewData.value)
 
     const submitAdd = () => {
-      interviewData.value.bio = tobase64.value
+      if (rejectionFlag) interviewData.value.result = 'FAILED'
+      console.log('tobase 64 value', tobase64.value)
+
+      if (tobase64.value !== '') {
+        interviewData.value.bio = tobase64.value
+        console.log('sto IF what i send for interv data', interviewData.value.bio)
+      } else {
+        const x = holdingValuesTable.find(f => f.id === props.editedInterview?.interviewId)
+        console.log('i found this', x)
+        // eslint-disable-next-line no-self-assign
+        interviewData.value.bio = interviewData.value.bio
+        console.log('sto ELSE what i send for interv data', interviewData.value.bio)
+      }
+
       if (props.editedInterview?.interviewId === '') {
         createInterview().then((res) => {
           console.log('created', res)
@@ -327,6 +353,14 @@ export default defineComponent({
       interviewData.value.result = ''
       interviewData.value.bio = ''
       showModal.value = !showModal.value
+
+      if (props.editedInterview !== undefined) {
+        holdingValuesTable.push({ id: props.editedInterview.interviewId, value: tobase64.value })
+      } else if (props.rowId !== undefined) {
+        holdingValuesTable.push({ id: props.rowId, value: tobase64.value })
+      }
+
+      tobase64.value = ''
       emit('changingvalue')
     }
 
@@ -341,8 +375,8 @@ export default defineComponent({
       files,
       tobase64,
       toggleModal,
-      sendingFile
-
+      sendingFile,
+      rejectionFlag
     }
   }
 

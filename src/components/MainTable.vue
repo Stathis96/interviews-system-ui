@@ -17,7 +17,7 @@
 
                 <div class="w-full lg:w-2/3 flex flex-col lg:flex-row items-start lg:items-center justify-end">
                 <!-- Pagination Stuff -->
-                    <div class="flex items-center lg:border-l lg:border-r border-gray-300 py-3 lg:py-0 lg:px-6" v-if="showNotNull">
+                    <div class="flex items-center lg:border-l lg:border-r border-gray-300 py-3 lg:py-0 lg:px-6" >
 
                         <div class="dropdown dropdown-hover
                             bg-gray-200 border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm
@@ -47,7 +47,7 @@
 
                     <div class="lg:ml-6 flex items-center">
                     <!-- Button for Showing Interviews with NULL RESULT -->
-                        <button class="bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showNotNull = !showNotNull">Interviews with Null Result</button>
+                        <button class="bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showNotNull = !showNotNull">StandBy Interviews</button>
                         <!-- ADD NEW INTERVIEW -->
                         <div class="text-white ml-4 cursor-pointer focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray bg-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 w-8 h-8 rounded flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" @click="openCreateDialog(emptyInterview)" >
@@ -105,7 +105,7 @@
                     </thead>
                     <!-- Table's Rows  -->
                     <tbody>
-                        <tr class="h-24 border-gray-300 border-b"  v-for="result in paginatedResult" :key="result.id" :result="result" v-if="showNotNull">
+                        <tr class="h-24 border-gray-300 border-b"  v-for="result in paginatedResult" :key="result.id" :result="result">
 
                             <td class="pl-4 text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{moment(result?.date).format('MMMM Do YYYY, h:mm a')}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.firstName}}</td>
@@ -214,6 +214,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable no-self-assign */
 import { computed, defineComponent, ref, watch } from '@vue/runtime-core'
 import { useFetchDownloadFile, useFetchInterviews, useFetchNullInterviews, useFetchPaginatedInterviews } from '../hooks/useFetchInterviews'
 import DeleteModal from './DeleteModal.vue'
@@ -333,11 +334,58 @@ export default defineComponent({
       console.log('Filter Changed', paginatedData.value.filter)
     })
 
-    const { result: paginatedResult, fetchInterviews: paginatedInterviews, total, offset } = useFetchPaginatedInterviews(paginatedData)
+    const status = computed(() => showNotNull.value === true ? undefined : 'null')
+
+    const { result: paginatedResult, fetchInterviews: paginatedInterviews, total, offset } = useFetchPaginatedInterviews(paginatedData, status)
     watch(total, () => {
       pagination.value.rowsNumber = total.value
     })
 
+    // watch(showNotNull, () => {
+    //   console.log('trigger watcher for shownotnull')
+    //   if (showNotNull.value) {
+    //     console.log('show not null value', showNotNull)
+    //     const { result: paginatedres, fetchInterviews: paginated, total: totalno2, offset: offsetno2 } = useFetchPaginatedInterviews(paginatedData, status)
+
+    //     paginatedResult = paginatedres
+    //     paginatedInterviews = paginated
+    //     total = totalno2
+    //     offset = offsetno2
+    //   } else {
+    //     const { result: paginatedResult1, fetchInterviews: paginatedInterviews1, total: total1, offset: offset1 } = useFetchPaginatedInterviews(paginatedData)
+
+    //     paginatedResult = paginatedResult1
+    //     paginatedInterviews = paginatedInterviews1
+    //     total = total1
+    //     offset = offset1
+    //   }
+    // })
+
+    // const showNullInterviews = () => {
+    //   showNotNull.value = !showNotNull.
+
+    // const status = computed(() => showNotNull.value === true ? undefined : 'null')
+    // if (showNotNull.value) {
+    //   console.log('show not null vallue', showNotNull)
+    //   const { result: paginatedres, total: totalno2, offset: offsetno2 } = useFetchPaginatedInterviews(paginatedData, status)
+
+    //   paginatedResult.value = paginatedres.value
+    //   total.value = totalno2.value
+    //   offset.value = offsetno2.value
+    // }
+    // else {
+    //   const { result: paginatedResult1, fetchInterviews: paginatedInterviews1, total: total1, offset: offset1 } = useFetchPaginatedInterviews(paginatedData)
+    //   paginatedResult = paginatedResult1
+    //   paginatedInterviews = paginatedInterviews1
+    //   total = total1
+    //   offset = offset1
+    // }
+    // }
+    // const fetchNullInterviews = () =>{
+
+    //   const { result: paginatedResult, fetchInterviews: paginatedInterviews, total, offset } = useFetchPaginatedInterviews(paginatedData,status)
+
+    // }
     // const nullToggle = ref(false)
     // const visibleData = ref<Interview[]>([])
     // watch(nullToggle, () => {
