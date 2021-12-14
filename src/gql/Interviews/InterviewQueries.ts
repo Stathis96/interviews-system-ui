@@ -1,8 +1,8 @@
 import gql from 'graphql-tag'
 
 export const getPaginatedInterviews = gql`
-query getPaginatedInterviews($getPaginatedInterviewsData: PaginationInputData!) {
-  paginatedInterviews: getPaginatedInterviews(data: $getPaginatedInterviewsData) {
+query getPaginatedInterviews($getPaginatedInterviewsData: PaginationInputData!,$status: String) {
+  paginatedInterviews: getPaginatedInterviews(data: $getPaginatedInterviewsData,status: $status) {
     context {
     interviewId
     date

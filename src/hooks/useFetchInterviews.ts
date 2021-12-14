@@ -117,7 +117,7 @@ export function useFetchInterviewById (id: string) {
   }
 }
 
-export function useFetchPaginatedInterviews (variables: Ref<PaginationInputData>) {
+export function useFetchPaginatedInterviews (variables: Ref<PaginationInputData>, status: Ref<undefined | string>) {
   const result = ref<Interview[]>([])
   const loading = ref(false)
   const total = ref<number>(0)
@@ -137,7 +137,8 @@ export function useFetchPaginatedInterviews (variables: Ref<PaginationInputData>
               page: variables.value.page,
               limit: variables.value.limit,
               filter: variables.value.filter
-            }
+            },
+            status: status?.value
           }
         }
       }) as unknown as GraphQLResponse <{ paginatedInterviews: PaginatedInterviews}>
@@ -161,6 +162,13 @@ export function useFetchPaginatedInterviews (variables: Ref<PaginationInputData>
     // console.log('variables are', variables)
     await fetchInterviews()
   })
+  watch(status, async () => {
+    await fetchInterviews().catch(e => console.log(e))
+  })
+  // watch(status, async () => {
+  //   // console.log('variables are', variables)
+  //   await fetchInterviews()
+  // })
   return {
     result,
     loading,
