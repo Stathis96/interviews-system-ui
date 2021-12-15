@@ -7,6 +7,7 @@ import { GraphQLResponse } from '../interfaces/AxiosResponse'
 import { createInterviewMutation, deleteFileMutation, deleteInterviewMutation, updateInterviewMutation } from '../gql/Interviews/InterviewMutations'
 import PdfFile from '../interfaces/PdfFile'
 
+let errors = ''
 export function useInterviewMutations (variables: InterviewInputData) {
   const result = ref<Interview>()
   const loading = ref(false)
@@ -46,6 +47,13 @@ export function useInterviewMutations (variables: InterviewInputData) {
 
       if (response.data.data) {
         result.value = response.data.data.createInterview
+      }
+      if (response.data.errors) {
+        console.log('show me the errors', (response.data.errors[0] as unknown as Error).message)
+        errors = (response.data.errors[0] as unknown as Error).message
+        return errors
+        // return (response.data.errors[0] as unknown as Error).message
+        // result.value = response.data.errors as unknown as void
       }
     } catch (e) {
       console.log(e)
