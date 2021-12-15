@@ -142,11 +142,10 @@
 
                             <!-- For Result -->
                             <td class="pr-6">
-                                <div v-if="result.result === null || result.result === ''" class="w-3 h-3 rounded-full bg-success"></div>
-                                <div v-else-if="result.result === 'Standby' || result.result === 'StandBy' || result.result === 'standby' || result.result === 'standBy' || result.result === 'stand by'
-                                || result.result === 'Stand By' || result.result === 'Stand by'
-                                " class="w-3 h-3 rounded-full bg-secondary"></div>
-                                <div v-else class="w-3 h-3 rounded-full bg-red-600"></div>
+                                <div v-if="result.result === null || result.result === ''" class="w-3 h-3 rounded-full bg-secondary"></div>
+                                <div v-else-if="result.result === 'FAILED'" class="w-3 h-3 rounded-full bg-red-600"></div>
+                                <div v-else-if="checkIfValidShop(result)" class="w-3 h-3 rounded-full bg-success"></div>
+                                <div v-else class="w-3 h-3 rounded-full bg-primary"></div>
                             </td>
                             <!-- For result -->
 
@@ -184,6 +183,25 @@
                     </tbody>
                 </table>
             </div>
+            <!-- placing message Content nearest to parent  -->
+          <div class="relative" role="alert" v-if="negativeMessage">
+              <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2 absolute inset-x-0 top-0 h-16">
+                Action Failed!
+              </div>
+              <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700 absolute inset-x-0 top-0 h-16">
+                <p>{{response}}</p>
+              </div>
+          </div>
+
+          <div class="relative" role="alert" v-if="positiveMessage">
+            <div class="bg-green-100 text-white font-bold rounded-t px-4 py-2 absolute inset-x-0 top-0 h-16">
+              Success!
+            </div>
+            <div class="border border-t-0 border-green-500 rounded-b bg-green-100 px-4 py-3 text-green-900 absolute inset-x-0 top-0 h-16">
+              <p>The interview was created succesfully!</p>
+            </div>
+        </div>
+
         </div>
     </div>
         <div v-if="showModal">
@@ -200,6 +218,7 @@
             @refetchinterviews='paginatedInterviews'
             @refetch='fetch'
             @changingvalue='closemodal'
+            @changingmessage="showerror"
             />
         </div>
 
@@ -211,18 +230,21 @@
           />
         </div>
         <div v-if="showPdf" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
+
 </template>
 
 <script lang="ts">
 /* eslint-disable no-self-assign */
 import { computed, defineComponent, ref, watch } from '@vue/runtime-core'
-import { useFetchDownloadFile, useFetchInterviews, useFetchNullInterviews, useFetchPaginatedInterviews } from '../hooks/useFetchInterviews'
+import { useFetchDownloadFile, useFetchPaginatedInterviews } from '../hooks/useFetchInterviews'
 import DeleteModal from './DeleteModal.vue'
 import Modal from './Modal.vue'
 
 import moment from 'moment'
 import Interview from '../interfaces/Interview'
 import PdfFile from '../interfaces/PdfFile'
+
+import { storesOptions } from '../assets/storeOptions'
 
 export default defineComponent({
   name: 'CompactTableWithActionsAndSelect',
@@ -260,10 +282,15 @@ export default defineComponent({
     const editedInterview = ref<Interview>()
     const shownFile = ref<string>('')
 
+    const checkIfValidShop = (result:Interview) => {
+      for (const store of storesOptions) {
+        if (result.result === store) return true
+      }
+    }
+
     const sendMessage = async (interview: Interview) => {
       showPdf.value = true
       const { fetchFile } = useFetchDownloadFile()
-
       await fetchFile(interview.interviewId, interview.bio as PdfFile)
         .then((res) => {
           if (res === undefined) return
@@ -296,8 +323,6 @@ export default defineComponent({
       addInterview.value = false
       showBullets.value = false
     }
-    const { result, fetchInterviews } = useFetchInterviews()
-    const { result: res, fetchInterviews: fetch } = useFetchNullInterviews()
 
     const pagination = ref({
       page: 1,
@@ -341,61 +366,6 @@ export default defineComponent({
       pagination.value.rowsNumber = total.value
     })
 
-    // watch(showNotNull, () => {
-    //   console.log('trigger watcher for shownotnull')
-    //   if (showNotNull.value) {
-    //     console.log('show not null value', showNotNull)
-    //     const { result: paginatedres, fetchInterviews: paginated, total: totalno2, offset: offsetno2 } = useFetchPaginatedInterviews(paginatedData, status)
-
-    //     paginatedResult = paginatedres
-    //     paginatedInterviews = paginated
-    //     total = totalno2
-    //     offset = offsetno2
-    //   } else {
-    //     const { result: paginatedResult1, fetchInterviews: paginatedInterviews1, total: total1, offset: offset1 } = useFetchPaginatedInterviews(paginatedData)
-
-    //     paginatedResult = paginatedResult1
-    //     paginatedInterviews = paginatedInterviews1
-    //     total = total1
-    //     offset = offset1
-    //   }
-    // })
-
-    // const showNullInterviews = () => {
-    //   showNotNull.value = !showNotNull.
-
-    // const status = computed(() => showNotNull.value === true ? undefined : 'null')
-    // if (showNotNull.value) {
-    //   console.log('show not null vallue', showNotNull)
-    //   const { result: paginatedres, total: totalno2, offset: offsetno2 } = useFetchPaginatedInterviews(paginatedData, status)
-
-    //   paginatedResult.value = paginatedres.value
-    //   total.value = totalno2.value
-    //   offset.value = offsetno2.value
-    // }
-    // else {
-    //   const { result: paginatedResult1, fetchInterviews: paginatedInterviews1, total: total1, offset: offset1 } = useFetchPaginatedInterviews(paginatedData)
-    //   paginatedResult = paginatedResult1
-    //   paginatedInterviews = paginatedInterviews1
-    //   total = total1
-    //   offset = offset1
-    // }
-    // }
-    // const fetchNullInterviews = () =>{
-
-    //   const { result: paginatedResult, fetchInterviews: paginatedInterviews, total, offset } = useFetchPaginatedInterviews(paginatedData,status)
-
-    // }
-    // const nullToggle = ref(false)
-    // const visibleData = ref<Interview[]>([])
-    // watch(nullToggle, () => {
-    //   if (nullToggle.value === true) {
-    //     visibleData.value = res.value
-    //   } else {
-    //     visibleData.value = paginatedResult.value
-    //   }
-    // })
-
     const subtract = () => {
       if (pagination.value.page - 1 <= 0) return
       pagination.value.page = pagination.value.page - 1
@@ -419,14 +389,36 @@ export default defineComponent({
         y.value = y.value + pagination.value.limit
       }
     }
+
+    const positiveMessage = ref(false)
+    const negativeMessage = ref(false)
+    const response = ref<string>(''
+    )
+    const showerror = (res:any) => {
+      response.value = res as string
+      if (!res) {
+        positiveMessage.value = true
+        setTimeout(() => {
+          positiveMessage.value = false
+        }, 5000)
+      } else {
+        negativeMessage.value = true
+        setTimeout(() => {
+          negativeMessage.value = false
+        }, 5000)
+      }
+      console.log('EMITED SUCCESSFULLY HERE IS THE RESPONSE ', res)
+    }
     return {
       toggleModal,
+      response,
+      positiveMessage,
+      negativeMessage,
+      showerror,
       showModal,
       closemodal,
       showNotNull,
       openCreateDialog,
-      result,
-      fetchInterviews,
       showrow,
       addInterview,
       showBullets,
@@ -436,7 +428,6 @@ export default defineComponent({
       moment,
       editedInterview,
       emptyInterview,
-      res,
       add,
       subtract,
       fetch,
@@ -451,7 +442,8 @@ export default defineComponent({
       sendMessage,
       showPdf,
       shownFile,
-      hidePdf
+      hidePdf,
+      checkIfValidShop
     }
   }
 })

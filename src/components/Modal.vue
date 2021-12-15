@@ -138,10 +138,11 @@
             <input type="text" class="input input-sm" v-model="interviewData.bio" v-if="interviewData.bio !== '.pdf'"/>
            </div>
 
-           <svg xmlns="http://www.w3.org/2000/svg" class="mt-10 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="interviewData.bio !== '.pdf' ">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" @click="toggleModal(editedInterview.bio)"/>
+          <div class="cursor-pointer" @click="toggleModal(editedInterview.bio)">
+           <svg xmlns="http://www.w3.org/2000/svg" class="mt-8 h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="interviewData.bio !== '.pdf' ">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"  />
             </svg>
-
+          </div>
           <div class="p-6 card bordered col-start-4 col-end-5">
             <div class="form-control">
               <label class="cursor-pointer label">
@@ -171,6 +172,26 @@
             :sendingFile="sendingFile"
             />
         </div>
+
+  <div role="alert" v-if="negativeMessage">
+    <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
+      Danger
+    </div>
+    <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+      <p>Something not ideal might be happening.</p>
+    </div>
+  </div>
+
+  <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md" role="alert" v-if="positiveMessage">
+  <div class="flex">
+    <div class="py-1"><svg class="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
+    <div>
+      <p class="font-bold">Our privacy policy has changed</p>
+      <p class="text-sm">Make sure you know how these changes affect you.</p>
+    </div>
+  </div>
+</div>
+
 </template>
 
 <script lang="ts">
@@ -185,7 +206,7 @@ import PdfFile from '../interfaces/PdfFile'
 
 export default defineComponent({
   name: 'regular-modal',
-  emits: ['refetch', 'refetchinterviews', 'changingvalue'],
+  emits: ['refetch', 'refetchinterviews', 'changingvalue', 'changingmessage'],
   components: {
     DeleteModal
   },
@@ -204,6 +225,9 @@ export default defineComponent({
     const showDeleteModal = ref(false)
     const sendingFile = ref<PdfFile>()
     const rejectionFlag = ref(false)
+
+    const positiveMessage = ref(false)
+    const negativeMessage = ref(false)
 
     const files = ref<any>()
     const tobase64 = ref<string>('')
@@ -260,8 +284,6 @@ export default defineComponent({
       bio: '.pdf'
     })
 
-    const holdingValuesTable = [{ id: '', value: '' }]
-
     const { createInterview } =
     useInterviewMutations(interviewData.value)
 
@@ -269,22 +291,22 @@ export default defineComponent({
     useInterviewUpdateMutations(interviewData.value)
 
     const submitAdd = () => {
-      if (rejectionFlag) interviewData.value.result = 'FAILED'
-      console.log('tobase 64 value', tobase64.value)
-
-      if (tobase64.value !== '') {
-        interviewData.value.bio = tobase64.value
-        console.log('sto IF what i send for interv data', interviewData.value.bio)
-      } else {
-        const x = holdingValuesTable.find(f => f.id === props.editedInterview?.interviewId)
-        console.log('i found this', x)
-        // eslint-disable-next-line no-self-assign
-        interviewData.value.bio = interviewData.value.bio
-        console.log('sto ELSE what i send for interv data', interviewData.value.bio)
-      }
+      if (rejectionFlag.value) interviewData.value.result = 'FAILED'
+      if (interviewData.value.result === '') interviewData.value.result = null
+      if (interviewData.value.bio === '.pdf') interviewData.value.bio = ''
+      interviewData.value.bio = tobase64.value
 
       if (props.editedInterview?.interviewId === '') {
         createInterview().then((res) => {
+          if (!res) {
+            emit('changingmessage', res)
+            positiveMessage.value = true
+          } else {
+            emit('changingmessage', res)
+            negativeMessage.value = true
+            console.log('mpika sto else', negativeMessage.value)
+          }
+
           console.log('created', res)
           console.log('what was sent', interviewData.value)
           console.log('show from submit', tobase64.value)
@@ -353,14 +375,7 @@ export default defineComponent({
       interviewData.value.result = ''
       interviewData.value.bio = ''
       showModal.value = !showModal.value
-
-      if (props.editedInterview !== undefined) {
-        holdingValuesTable.push({ id: props.editedInterview.interviewId, value: tobase64.value })
-      } else if (props.rowId !== undefined) {
-        holdingValuesTable.push({ id: props.rowId, value: tobase64.value })
-      }
-
-      tobase64.value = ''
+      // tobase64.value = ''
       emit('changingvalue')
     }
 
@@ -376,7 +391,9 @@ export default defineComponent({
       tobase64,
       toggleModal,
       sendingFile,
-      rejectionFlag
+      rejectionFlag,
+      positiveMessage,
+      negativeMessage
     }
   }
 
