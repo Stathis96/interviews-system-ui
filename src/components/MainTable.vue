@@ -198,7 +198,7 @@
               Success!
             </div>
             <div class="border border-t-0 border-green-500 rounded-b bg-green-100 px-4 py-3 text-green-900 absolute inset-x-0 top-0 h-16">
-              <p>The interview was created succesfully!</p>
+              <p>The interview was created/updated succesfully!</p>
             </div>
         </div>
 
