@@ -169,28 +169,10 @@
   </div>
           <div v-if="showDeleteModal">
             <DeleteModal
+            @refetchfordelete="deletefile"
             :sendingFile="sendingFile"
             />
         </div>
-
-  <div role="alert" v-if="negativeMessage">
-    <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
-      Danger
-    </div>
-    <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-      <p>Something not ideal might be happening.</p>
-    </div>
-  </div>
-
-  <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md" role="alert" v-if="positiveMessage">
-  <div class="flex">
-    <div class="py-1"><svg class="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
-    <div>
-      <p class="font-bold">Our privacy policy has changed</p>
-      <p class="text-sm">Make sure you know how these changes affect you.</p>
-    </div>
-  </div>
-</div>
 
 </template>
 
@@ -225,9 +207,6 @@ export default defineComponent({
     const showDeleteModal = ref(false)
     const sendingFile = ref<PdfFile>()
     const rejectionFlag = ref(false)
-
-    const positiveMessage = ref(false)
-    const negativeMessage = ref(false)
 
     const files = ref<any>()
     const tobase64 = ref<string>('')
@@ -298,15 +277,7 @@ export default defineComponent({
 
       if (props.editedInterview?.interviewId === '') {
         createInterview().then((res) => {
-          if (!res) {
-            emit('changingmessage', res)
-            positiveMessage.value = true
-          } else {
-            emit('changingmessage', res)
-            negativeMessage.value = true
-            console.log('mpika sto else', negativeMessage.value)
-          }
-
+          emit('changingmessage', res)
           console.log('created', res)
           console.log('what was sent', interviewData.value)
           console.log('show from submit', tobase64.value)
@@ -317,7 +288,12 @@ export default defineComponent({
           alert(err)
         })
       } else {
+        if (deleteFlag.value) {
+          interviewData.value.bio = 'deleted'
+          deleteFlag.value = false
+        }
         updateInterview(props.editedInterview?.interviewId as string).then((res) => {
+          emit('changingmessage', res)
           console.log('updated', res)
           console.log('what was sent', interviewData.value)
           console.log('show from submit', tobase64.value)
@@ -329,6 +305,12 @@ export default defineComponent({
         })
       }
     }
+
+    const deleteFlag = ref(false)
+    const deletefile = () => {
+      deleteFlag.value = true
+    }
+
     onMounted(() => {
       if (props.editedInterview?.interviewId !== '') {
         filledFields(props.editedInterview as Interview)
@@ -383,6 +365,7 @@ export default defineComponent({
       interviewData,
       createInterview,
       submitAdd,
+      deletefile,
       cancelAll,
       showDeleteModal,
       showModal,
@@ -391,9 +374,7 @@ export default defineComponent({
       tobase64,
       toggleModal,
       sendingFile,
-      rejectionFlag,
-      positiveMessage,
-      negativeMessage
+      rejectionFlag
     }
   }
 

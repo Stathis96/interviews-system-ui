@@ -73,7 +73,8 @@ export default defineComponent({
           toggleModal()
           console.log('delete a file')
           console.log('deleted', res)
-          emit('refetchinterviews')
+          console.log('hey')
+          emit('refetchfordelete')
         }).catch((err) => {
           alert(err)
         })
