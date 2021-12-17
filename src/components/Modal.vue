@@ -138,7 +138,7 @@
             <input type="text" class="input input-sm" v-model="interviewData.bio" v-if="interviewData.bio !== '.pdf'"/>
            </div>
 
-          <div class="cursor-pointer" @click="toggleModal(editedInterview.bio)">
+          <div class="cursor-pointer" @click="toggleModal(editedInterview.bio)" v-if="interviewData.bio !== '.pdf' ">
            <svg xmlns="http://www.w3.org/2000/svg" class="mt-8 h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-if="interviewData.bio !== '.pdf' ">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"  />
             </svg>
@@ -278,9 +278,9 @@ export default defineComponent({
       if (props.editedInterview?.interviewId === '') {
         createInterview().then((res) => {
           emit('changingmessage', res)
-          console.log('created', res)
-          console.log('what was sent', interviewData.value)
-          console.log('show from submit', tobase64.value)
+          // console.log('created', res)
+          // console.log('what was sent', interviewData.value)
+          // console.log('show from submit', tobase64.value)
           emit('refetchinterviews')
           emit('refetch')
           cancelAll()
@@ -294,9 +294,9 @@ export default defineComponent({
         }
         updateInterview(props.editedInterview?.interviewId as string).then((res) => {
           emit('changingmessage', res)
-          console.log('updated', res)
-          console.log('what was sent', interviewData.value)
-          console.log('show from submit', tobase64.value)
+          // console.log('updated', res)
+          // console.log('what was sent', interviewData.value)
+          // console.log('show from submit', tobase64.value)
           emit('refetchinterviews')
           emit('refetch')
           cancelAll()
@@ -317,7 +317,7 @@ export default defineComponent({
       }
     })
     const filledFields = (filledInterview :Interview) => {
-      console.log('what i sent ', filledInterview)
+      // console.log('what i sent ', filledInterview)
       interviewData.value.date = moment(filledInterview.date.toString()).format('YYYY-MM-DDThh:mm')
       interviewData.value.city = filledInterview.city
       interviewData.value.area = filledInterview.area

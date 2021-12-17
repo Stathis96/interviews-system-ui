@@ -1,4 +1,5 @@
 <template>
+
     <div class="w-full bg-base-300 py-10">
         <div class="w-full mx-auto h-screen container bg-white dark:bg-gray-800 dark:bg-gray-800 shadow rounded" style="height:60vh">
             <div class="flex flex-col lg:flex-row p-4 lg:p-8 justify-between items-start lg:items-stretch w-full">
@@ -62,7 +63,8 @@
             <!-- End of Table's Header -->
 
             <!-- Populating Table -->
-            <div class="w-full h-full overflow-x-scroll xl:overflow-x-hidden">
+            <!-- xl:overflow-x-hidden -->
+            <div class="w-full h-full overflow-x-scroll">
                 <table class="min-w-full bg-white dark:bg-gray-800" >
                     <thead>
                         <tr class="w-full h-16 border-gray-300 border-b py-8">
@@ -93,8 +95,8 @@
                             <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Vaccinated</th>
                             <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Doses</th>
                             <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Shifts</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Comments</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">ToStore</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-center text-sm tracking-normal leading-4">Comments</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-center text-sm tracking-normal leading-4">ToStore</th>
                             <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Result</th>
                             <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Bio</th>
                             <!-- <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">
@@ -135,10 +137,16 @@
                                 <input type="checkbox" v-else class="relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
                             </td>
 
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.doses}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.shifts}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.comments}}</td>
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.toStore}}</td>
+                            <td class="text-sm text-center pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.doses}}</td>
+                            <td class="text-sm text-center pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.shifts}}</td>
+
+                            <td class="text-sm text-center pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4" v-if="checkString(result.comments.toString())">{{result.comments.toString()}}</td>
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4 tooltip" v-else>{{result.comments.toString().slice(0,18)}}
+                                <p class="text-xs italic font-thin">...show more</p>
+                                <span class="tooltiptext">{{result.comments.toString()}}</span>
+                            </td>
+
+                            <td class="text-sm text-center pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.toStore.toString()}}</td>
 
                             <!-- For Result -->
                             <td class="pr-6">
@@ -201,7 +209,7 @@
               <p>The interview was created/updated succesfully!</p>
             </div>
         </div>
-
+        <!-- placing message Content nearest to parent  -->
         </div>
     </div>
         <div v-if="showModal">
@@ -392,10 +400,11 @@ export default defineComponent({
 
     const positiveMessage = ref(false)
     const negativeMessage = ref(false)
-    const response = ref<string>(''
-    )
+    const response = ref<string>('')
+
     const showerror = (res:any) => {
       response.value = res as string
+      console.log('show response', res)
       if (!res) {
         positiveMessage.value = true
         setTimeout(() => {
@@ -407,10 +416,18 @@ export default defineComponent({
           negativeMessage.value = false
         }, 5000)
       }
-      console.log('EMITED SUCCESSFULLY HERE IS THE RESPONSE ', res)
+    }
+    const checkString = (comments : string) => {
+      if (comments.length < 18) return true
+    }
+    const showTooltip = ref(false)
+    const showFullString = (comments :string) => {
+      showTooltip.value = !showTooltip.value
+      console.log(comments)
     }
     return {
       toggleModal,
+      showTooltip,
       response,
       positiveMessage,
       negativeMessage,
@@ -443,12 +460,49 @@ export default defineComponent({
       showPdf,
       shownFile,
       hidePdf,
-      checkIfValidShop
+      checkIfValidShop,
+      checkString,
+      showFullString
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
+//for tooltip
+.tooltip {
+  cursor: help;
+  position: relative;
+  display: table-cell;
+}
 
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: rgb(12, 147, 226);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 5px;
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 1%;
+  margin-left: -20px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
 </style>
