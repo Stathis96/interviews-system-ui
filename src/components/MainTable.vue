@@ -1,5 +1,4 @@
 <template>
-
     <div class="w-full bg-base-300 py-10">
         <div class="w-full mx-auto h-screen container bg-white dark:bg-gray-800 dark:bg-gray-800 shadow rounded" style="height:60vh">
             <div class="flex flex-col lg:flex-row p-4 lg:p-8 justify-between items-start lg:items-stretch w-full">
@@ -99,9 +98,6 @@
                             <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-center text-sm tracking-normal leading-4">ToStore</th>
                             <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Result</th>
                             <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Bio</th>
-                            <!-- <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">
-                                <div class="opacity-0 w-2 h-2 rounded-full bg-indigo-400"></div>
-                            </th> -->
                             <td class="text-gray-600 dark:text-gray-400 font-normal pr-8 text-left text-sm tracking-normal leading-4">More</td>
                         </tr>
                     </thead>
@@ -158,7 +154,7 @@
                             <!-- For result -->
 
                             <!-- For Bio -->
-                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">
+                            <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4" title="Preview PDF file">
                               <div v-if="result.bio.name !== ''">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" @click="sendMessage(result)">
                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -186,7 +182,6 @@
                                 </button>
                             </td>
                             <!-- For action bullets -->
-
                         </tr>
                     </tbody>
                 </table>
@@ -214,19 +209,19 @@
     </div>
         <div v-if="showModal">
             <DeleteModal
-            :rowId="rowId"
-            @changevalue='closemodal'
-            @refetchinterviews='paginatedInterviews'
-            @refetch='fetch'
+              :rowId="rowId"
+              @changevalue='closemodal'
+              @refetchinterviews='paginatedInterviews'
+              @refetch='fetch'
             />
         </div>
         <div v-if="addInterview">
             <Modal
-            :editedInterview="editedInterview"
-            @refetchinterviews='paginatedInterviews'
-            @refetch='fetch'
-            @changingvalue='closemodal'
-            @changingmessage="showerror"
+              :editedInterview="editedInterview"
+              @refetchinterviews='paginatedInterviews'
+              @refetch='fetch'
+              @changingvalue='closemodal'
+              @changingmessage="showerror"
             />
         </div>
 
@@ -244,15 +239,16 @@
 <script lang="ts">
 /* eslint-disable no-self-assign */
 import { computed, defineComponent, ref, watch } from '@vue/runtime-core'
-import { useFetchDownloadFile, useFetchPaginatedInterviews } from '../hooks/useFetchInterviews'
+import moment from 'moment'
+
+import { storesOptions } from '../assets/storeOptions'
+
 import DeleteModal from './DeleteModal.vue'
 import Modal from './Modal.vue'
-
-import moment from 'moment'
 import Interview from '../interfaces/Interview'
 import PdfFile from '../interfaces/PdfFile'
 
-import { storesOptions } from '../assets/storeOptions'
+import { useFetchDownloadFile, useFetchPaginatedInterviews } from '../hooks/useFetchInterviews'
 
 export default defineComponent({
   name: 'CompactTableWithActionsAndSelect',
@@ -309,7 +305,6 @@ export default defineComponent({
     const hidePdf = () => {
       showPdf.value = !showPdf.value
     }
-
     const toggleModal = (id: string) => {
       showModal.value = !showModal.value
       showBullets.value = false
@@ -420,46 +415,55 @@ export default defineComponent({
     const checkString = (comments : string) => {
       if (comments.length < 18) return true
     }
+
     const showTooltip = ref(false)
     const showFullString = (comments :string) => {
       showTooltip.value = !showTooltip.value
       console.log(comments)
     }
+
     return {
-      toggleModal,
-      showTooltip,
-      response,
-      positiveMessage,
-      negativeMessage,
-      showerror,
-      showModal,
-      closemodal,
-      showNotNull,
-      openCreateDialog,
-      showrow,
-      addInterview,
-      showBullets,
-      openSide,
-      rowId,
-      filter,
       moment,
       editedInterview,
       emptyInterview,
-      add,
-      subtract,
+
+      toggleModal,
+      response,
+      positiveMessage,
+      negativeMessage,
+
+      showerror,
+      showModal,
+      showTooltip,
+      showNotNull,
+      showrow,
+      showBullets,
+      closemodal,
+
+      openCreateDialog,
+      openSide,
+      addInterview,
+      rowId,
+      filter,
+
       fetch,
       paginatedResult,
       paginatedInterviews,
+
       total,
       paginatedData,
       x,
       y,
       offset,
       change,
+      add,
+      subtract,
+
       sendMessage,
       showPdf,
       shownFile,
       hidePdf,
+
       checkIfValidShop,
       checkString,
       showFullString

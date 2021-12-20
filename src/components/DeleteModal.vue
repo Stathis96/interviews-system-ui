@@ -50,17 +50,16 @@ export default defineComponent({
   },
   setup (props, { emit }) {
     const showModal = ref(true)
+
     const toggleModal = () => {
       showModal.value = !showModal.value
       emit('changevalue')
     }
     const { deleteInterview } = useInterviewDeleteMutations()
     const { deleteFile } = useDeleteMutations()
-    console.log('filesent', props.sendingFile)
 
     const submitDelete = () => {
       if (props.sendingFile === undefined) {
-        console.log('delete an interview')
         deleteInterview(props.rowId as string).then((res) => {
           toggleModal()
           console.log('deleted', res)
@@ -71,9 +70,7 @@ export default defineComponent({
       } else {
         deleteFile(props.sendingFile).then((res) => {
           toggleModal()
-          console.log('delete a file')
           console.log('deleted', res)
-          console.log('hey')
           emit('refetchfordelete')
         }).catch((err) => {
           alert(err)

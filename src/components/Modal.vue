@@ -169,8 +169,8 @@
   </div>
           <div v-if="showDeleteModal">
             <DeleteModal
-            @refetchfordelete="deletefile"
-            :sendingFile="sendingFile"
+              @refetchfordelete="deletefile"
+              :sendingFile="sendingFile"
             />
         </div>
 
@@ -179,12 +179,15 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { defineComponent, onMounted, PropType, ref } from '@vue/runtime-core'
-import { useInterviewMutations, useInterviewUpdateMutations } from '../hooks/useInterviewsMutations'
-import InterviewInputData from '../interfaces/classes/InterviewInputData'
-import Interview from '../interfaces/Interview'
 import moment from 'moment'
+
+import Interview from '../interfaces/Interview'
 import DeleteModal from './DeleteModal.vue'
 import PdfFile from '../interfaces/PdfFile'
+
+import InterviewInputData from '../interfaces/classes/InterviewInputData'
+
+import { useInterviewMutations, useInterviewUpdateMutations } from '../hooks/useInterviewsMutations'
 
 export default defineComponent({
   name: 'regular-modal',
@@ -367,11 +370,13 @@ export default defineComponent({
       submitAdd,
       deletefile,
       cancelAll,
+
       showDeleteModal,
       showModal,
       handleEncoding,
       files,
       tobase64,
+
       toggleModal,
       sendingFile,
       rejectionFlag
