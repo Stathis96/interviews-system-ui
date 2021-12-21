@@ -32,7 +32,7 @@
             <input type="text" class="input input-sm input-bordered" v-model="interviewData.firstName">
             </div>
 
-            <div class="form-control">
+            <div class="form-control col-start-3 col-end-5">
             <label class="label">
               <span class="label-text">LastName</span>
             </label>
@@ -143,6 +143,16 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"  />
             </svg>
           </div>
+
+           <div class="p-6 card bordered col-start-3 col-end-4">
+            <div class="form-control">
+              <label class="cursor-pointer label">
+                <span class="label-text">Hired</span>
+                <input type="checkbox" class="toggle toggle-primary" v-model="hiredFlag">
+              </label>
+            </div>
+          </div>
+
           <div class="p-6 card bordered col-start-4 col-end-5">
             <div class="form-control">
               <label class="cursor-pointer label">
@@ -210,6 +220,7 @@ export default defineComponent({
     const showDeleteModal = ref(false)
     const sendingFile = ref<PdfFile>()
     const rejectionFlag = ref(false)
+    const hiredFlag = ref(false)
 
     const files = ref<any>()
     const tobase64 = ref<string>('')
@@ -274,6 +285,7 @@ export default defineComponent({
 
     const submitAdd = () => {
       if (rejectionFlag.value) interviewData.value.result = 'FAILED'
+      if (hiredFlag.value) interviewData.value.result = 'HIRED'
       if (interviewData.value.result === '') interviewData.value.result = null
       if (interviewData.value.bio === '.pdf') interviewData.value.bio = ''
       interviewData.value.bio = tobase64.value
@@ -379,7 +391,8 @@ export default defineComponent({
 
       toggleModal,
       sendingFile,
-      rejectionFlag
+      rejectionFlag,
+      hiredFlag
     }
   }
 

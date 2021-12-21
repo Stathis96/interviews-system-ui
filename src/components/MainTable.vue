@@ -1,6 +1,6 @@
 <template>
     <div class="w-full bg-base-300 py-10">
-        <div class="w-full mx-auto h-screen container bg-white dark:bg-gray-800 dark:bg-gray-800 shadow rounded" style="height:60vh">
+        <div class="w-full mx-auto h-screen container bg-white dark:bg-gray-800 dark:bg-gray-800 shadow rounded" style="height:80vh">
             <div class="flex flex-col lg:flex-row p-4 lg:p-8 justify-between items-start lg:items-stretch w-full">
                 <div class="w-full lg:w-1/3 flex flex-col lg:flex-row items-start lg:items-center">
 
@@ -23,9 +23,9 @@
                             bg-gray-200 border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm
                             mr-2">Records per Page
                                 <select class="ml-6 mt-16 p-2 shadow menu dropdown-content bg-base-100 rounded-box w-20" v-model.number="paginatedData.limit" @click="change">
-                                    <option value="3" selected>3</option>
+                                    <option value="3">3</option>
                                     <option value="5">5</option>
-                                    <option value="10">10</option>
+                                    <option value="10" selected>10</option>
                                     <option value="10000">All</option>
                                 </select>
                         </div>
@@ -48,6 +48,7 @@
                     <div class="lg:ml-6 flex items-center">
                     <!-- Button for Showing Interviews with NULL RESULT -->
                         <button class="bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showNotNull = !showNotNull">StandBy Interviews</button>
+                        <button class="ml-2 bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showPending = !showPending">Pending Interviews</button>
                         <!-- ADD NEW INTERVIEW -->
                         <div class="text-white ml-4 cursor-pointer focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray bg-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 w-8 h-8 rounded flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" @click="openCreateDialog(emptyInterview)" >
@@ -81,31 +82,35 @@
                                     </svg>
                                 </div>
                             </th> -->
-                            <th class="pl-8 text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Date</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">FirstName</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">LastName</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">City</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Area</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Mobile</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Age</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">HealthCertificate</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">WorkPermit</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">EfetSeminars</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Vaccinated</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Doses</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Shifts</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-center text-sm tracking-normal leading-4">Comments</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-center text-sm tracking-normal leading-4">ToStore</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Result</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-normal pr-6 text-left text-sm tracking-normal leading-4">Bio</th>
-                            <td class="text-gray-600 dark:text-gray-400 font-normal pr-8 text-left text-sm tracking-normal leading-4">More</td>
+                            <th class="pl-8 text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Date</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">FirstName</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">LastName</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">City</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Area</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Mobile</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Age</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">HealthCertificate</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">WorkPermit</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">EfetSeminars</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Vaccinated</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Doses</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Shifts</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-center text-sm tracking-normal leading-4">Comments</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-center text-sm tracking-normal leading-4">ToStore</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Result</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Bio</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-8 text-left text-sm tracking-normal leading-4">More</th>
                         </tr>
                     </thead>
                     <!-- Table's Rows  -->
                     <tbody>
-                        <tr class="h-24 border-gray-300 border-b"  v-for="result in paginatedResult" :key="result.id" :result="result">
+                        <tr class="h-10 border-gray-300 border-b" v-for="result in paginatedResult" :key="result.id" :result="result"
+                          :class="result.result === null || result.result === '' ? 'bg-white': result.result === 'FAILED' ? 'bg-red-400' : checkIfValidShop(result) ? 'bg-green-300' : 'bg-yellow-200'"
+                        >
+                        <!-- :class="result.result === null || result.result === '' ? 'bg-secondary': props.row.status == 'REJECTED' ? 'red' : props.row.status == 'PENDING' ? 'orange' : 'purple'" -->
+                        <!-- :class="result.result === null || result.result === '' ? 'bg-secondary': result.result === 'FAILED' ? 'bg-red-600' : checkIfValidShop(result) ? 'bg-success' : 'bg-primary'" -->
 
-                            <td class="pl-4 text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{moment(result?.date).format('MMMM Do YYYY, h:mm a')}}</td>
+                            <td class="pl-4 text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{moment(result?.date).format('L, h:mm:ss a')}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.firstName}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.lastName}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.city}}</td>
@@ -146,10 +151,10 @@
 
                             <!-- For Result -->
                             <td class="pr-6">
-                                <div v-if="result.result === null || result.result === ''" class="w-3 h-3 rounded-full bg-secondary"></div>
+                                <div v-if="result.result === null || result.result === ''" class="w-3 h-3 rounded-full bg-primary"></div>
                                 <div v-else-if="result.result === 'FAILED'" class="w-3 h-3 rounded-full bg-red-600"></div>
                                 <div v-else-if="checkIfValidShop(result)" class="w-3 h-3 rounded-full bg-success"></div>
-                                <div v-else class="w-3 h-3 rounded-full bg-primary"></div>
+                                <div v-else class="w-3 h-3 rounded-full bg-yellow-500"></div>
                             </td>
                             <!-- For result -->
 
@@ -281,6 +286,7 @@ export default defineComponent({
     const showModal = ref(false)
     const addInterview = ref(false)
     const showNotNull = ref(true)
+    const showPending = ref(true)
     const showPdf = ref(false)
     const rowId = ref('')
     const editedInterview = ref<Interview>()
@@ -329,7 +335,7 @@ export default defineComponent({
 
     const pagination = ref({
       page: 1,
-      limit: 3,
+      limit: 10,
       rowsNumber: 20,
       filter: ''
     })
@@ -362,7 +368,17 @@ export default defineComponent({
       console.log('Filter Changed', paginatedData.value.filter)
     })
 
-    const status = computed(() => showNotNull.value === true ? undefined : 'null')
+    const status = computed(() => {
+      if (showNotNull.value === true && showPending.value === true) {
+        console.log('pendings value', showNotNull.value)
+        return undefined
+      } else if (showPending.value === false && showNotNull.value === true) {
+        console.log('pendings value', showPending.value)
+        return 'pending'
+      } else {
+        return 'null'
+      }
+    })
 
     const { result: paginatedResult, fetchInterviews: paginatedInterviews, total, offset } = useFetchPaginatedInterviews(paginatedData, status)
     watch(total, () => {
@@ -436,6 +452,7 @@ export default defineComponent({
       showModal,
       showTooltip,
       showNotNull,
+      showPending,
       showrow,
       showBullets,
       closemodal,
@@ -508,5 +525,11 @@ export default defineComponent({
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+th {
+  background: white;
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+  z-index: 10;
 }
 </style>
