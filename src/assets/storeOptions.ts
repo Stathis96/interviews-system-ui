@@ -1,4 +1,5 @@
 export const storesOptions = [
+  'HIRED',
   'bnetheadquarters',
   'twveria',
   'bnetoreokastro',
