@@ -1,5 +1,4 @@
 export const storesOptions = [
-  'HIRED',
   'bnetheadquarters',
   'twveria',
   'bnetoreokastro',
@@ -82,5 +81,6 @@ export const storesOptions = [
   'bnetrodos',
   'bnetlarnaca',
   'twkallithea',
-  'bnetchania'
+  'bnetchania',
+  'HIRED'
 ]
