@@ -23,9 +23,9 @@
                             bg-gray-200 border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm
                             mr-2">Records per Page
                                 <select class="ml-6 mt-16 p-2 shadow menu dropdown-content bg-base-100 rounded-box w-20" v-model.number="paginatedData.limit" @click="change">
-                                    <option value="3">3</option>
-                                    <option value="5">5</option>
                                     <option value="10" selected>10</option>
+                                    <option value="15">15</option>
+                                    <option value="20">20</option>
                                     <option value="10000">All</option>
                                 </select>
                         </div>
@@ -82,7 +82,7 @@
                                     </svg>
                                 </div>
                             </th> -->
-                            <th class="pl-8 text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Date</th>
+                            <th class="pl-8 text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4 cursor-pointer" title="Click to sort table with regard to Date" @click="sortData">Date</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">FirstName</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">LastName</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">City</th>
@@ -107,9 +107,6 @@
                         <tr class="h-10 border-gray-300 border-b" v-for="result in paginatedResult" :key="result.id" :result="result"
                           :class="result.result === null || result.result === '' ? 'bg-white': result.result === 'FAILED' ? 'bg-red-400' : checkIfValidShop(result) ? 'bg-green-300' : 'bg-yellow-200'"
                         >
-                        <!-- :class="result.result === null || result.result === '' ? 'bg-secondary': props.row.status == 'REJECTED' ? 'red' : props.row.status == 'PENDING' ? 'orange' : 'purple'" -->
-                        <!-- :class="result.result === null || result.result === '' ? 'bg-secondary': result.result === 'FAILED' ? 'bg-red-600' : checkIfValidShop(result) ? 'bg-success' : 'bg-primary'" -->
-
                             <td class="pl-4 text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{moment(result?.date).format('L, h:mm:ss a')}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.firstName}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.lastName}}</td>
@@ -438,6 +435,24 @@ export default defineComponent({
       console.log(comments)
     }
 
+    // const array = computed(() => {
+    //   return paginatedResult.value
+    // })
+    const sortAscending = ref(false)
+    const sortData = () => {
+      if (sortAscending.value) {
+        sortAscending.value = !sortAscending.value
+        paginatedResult.value = paginatedResult.value.sort((a, b) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime()
+        })
+      } else {
+        sortAscending.value = !sortAscending.value
+        paginatedResult.value = paginatedResult.value.sort((a, b) => {
+          return new Date(a.date).getTime() - new Date(b.date).getTime()
+        })
+      }
+    }
+
     return {
       moment,
       editedInterview,
@@ -483,7 +498,10 @@ export default defineComponent({
 
       checkIfValidShop,
       checkString,
-      showFullString
+      showFullString,
+
+      sortData,
+      sortAscending
     }
   }
 })

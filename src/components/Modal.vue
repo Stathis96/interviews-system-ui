@@ -118,17 +118,36 @@
 
             <div class="form-control">
             <label class="label">
-              <span class="label-text">ToStore</span>
-            </label>
-            <textarea class="textarea h-24 textarea-bordered" v-model="interviewData.toStore"></textarea>
-            </div>
-
-            <div class="form-control">
-            <label class="label">
               <span class="label-text">Result</span>
             </label>
             <input type="text" class="input input-sm input-bordered" v-model="interviewData.result">
             </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">ToStore</span>
+              </label>
+                <!-- <Multiselect
+                  v-model="value"
+                  mode="multiple"
+                  placeholder="Select your characters"
+                  :options="{
+                    batman: 'Batman',
+                    robin: 'Robin',
+                    joker: 'Joker'
+                  }"
+                >
+                  <template v-slot:multiplelabel="{ values }">
+                    <div class="multiselect-multiple-label">
+                      {{ values.length }} characters selected
+                    </div>
+                  </template>
+                </Multiselect> -->
+            <input type="text" class="input input-sm input-bordered" v-model="interviewData.toStore">
+            <select name="stores" id="stores" v-model="interviewData.toStore" multiple>
+              <option v-for="store in storesOptions" :key="store.id" :value="store">{{store}}</option>
+            </select>
+          </div>
 
             <div class="form-control">
             <label class="label">
@@ -199,6 +218,9 @@ import InterviewInputData from '../interfaces/classes/InterviewInputData'
 
 import { useInterviewMutations, useInterviewUpdateMutations } from '../hooks/useInterviewsMutations'
 
+// import Multiselect from '@vueform/multiselect'
+import { storesOptions } from '../assets/storeOptions'
+
 export default defineComponent({
   name: 'regular-modal',
   emits: ['refetch', 'refetchinterviews', 'changingvalue', 'changingmessage'],
@@ -216,6 +238,7 @@ export default defineComponent({
     }
   },
   setup (props, { emit }) {
+    const options = ['Laravel', 'Laravel 8', 'Vue JS', 'codeplaners.com']
     const showModal = ref(true)
     const showDeleteModal = ref(false)
     const sendingFile = ref<PdfFile>()
@@ -392,9 +415,15 @@ export default defineComponent({
       toggleModal,
       sendingFile,
       rejectionFlag,
-      hiredFlag
+      hiredFlag,
+
+      options,
+      storesOptions
     }
   }
 
 })
 </script>
+<style lang="scss" scoped>
+
+</style>
