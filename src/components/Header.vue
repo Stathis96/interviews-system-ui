@@ -3,8 +3,8 @@
  <!-- Fontswesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
 
-    <header class="text-gray-100 bg-neutral body-font shadow w-full h-20">
-        <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+    <header class="text-gray-100 bg-neutral body-font shadow w-full h-16">
+        <div class="p-2 container mx-auto flex flex-wrap flex-col md:flex-row items-center">
             <nav class="flex lg:w-2/5 flex-wrap items-center text-base md:ml-auto">
                 <div class="flex flex-col">
                     <p class="font-bold">{{userName}}</p>

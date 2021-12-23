@@ -1,6 +1,7 @@
 <template>
     <div class="w-full bg-base-300 py-10">
-        <div class="w-full mx-auto h-screen container bg-white dark:bg-gray-800 dark:bg-gray-800 shadow rounded" style="height:80vh">
+        <div class="w-full h-screen m-2 bg-white dark:bg-gray-800 dark:bg-gray-800 shadow rounded overflow-auto" style="height:80vh">
+        <!-- <div class="w-full mx-auto h-screen container bg-white dark:bg-gray-800 dark:bg-gray-800 shadow rounded" style="height:80vh"> -->
             <div class="flex flex-col lg:flex-row p-4 lg:p-8 justify-between items-start lg:items-stretch w-full">
                 <div class="w-full lg:w-1/3 flex flex-col lg:flex-row items-start lg:items-center">
 
@@ -82,7 +83,16 @@
                                     </svg>
                                 </div>
                             </th> -->
-                            <th class="pl-8 text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4 cursor-pointer" title="Click to sort table with regard to Date" @click="sortData">Date</th>
+                            <!-- <div class="flex flex-col"> -->
+                            <th class="pl-8 text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4 cursor-pointer" title="Click to sort table with regard to Date" @click="sortData"
+                            >Date</th>
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                            </svg> -->
+                            <!-- </div> -->
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">FirstName</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">LastName</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">City</th>
@@ -97,7 +107,7 @@
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Shifts</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-center text-sm tracking-normal leading-4">Comments</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-center text-sm tracking-normal leading-4">ToStore</th>
-                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Result</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-center text-sm tracking-normal leading-4">Result</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Bio</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-8 text-left text-sm tracking-normal leading-4">More</th>
                         </tr>
@@ -105,7 +115,7 @@
                     <!-- Table's Rows  -->
                     <tbody>
                         <tr class="h-10 border-gray-300 border-b" v-for="result in paginatedResult" :key="result.id" :result="result"
-                          :class="result.result === null || result.result === '' ? 'bg-white': result.result === 'FAILED' ? 'bg-red-400' : checkIfValidShop(result) ? 'bg-green-300' : 'bg-yellow-200'"
+                          :class="result.result === null || result.result === '' ? 'bg-white': result.result === 'FAILED' ? 'bg-red-300' : checkIfValidShop(result) ? 'bg-green-200' : 'bg-yellow-100'"
                         >
                             <td class="pl-4 text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{moment(result?.date).format('L, h:mm:ss a')}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.firstName}}</td>
@@ -147,12 +157,13 @@
                             <td class="text-sm text-center pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.toStore.toString()}}</td>
 
                             <!-- For Result -->
-                            <td class="pr-6">
+                            <td class="text-sm text-center pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.result}}</td>
+                            <!-- <td class="pr-6">
                                 <div v-if="result.result === null || result.result === ''" class="w-3 h-3 rounded-full bg-primary"></div>
                                 <div v-else-if="result.result === 'FAILED'" class="w-3 h-3 rounded-full bg-red-600"></div>
                                 <div v-else-if="checkIfValidShop(result)" class="w-3 h-3 rounded-full bg-success"></div>
                                 <div v-else class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                            </td>
+                            </td> -->
                             <!-- For result -->
 
                             <!-- For Bio -->

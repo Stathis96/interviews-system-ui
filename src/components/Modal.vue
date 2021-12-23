@@ -44,6 +44,8 @@
               <span class="label-text">City</span>
             </label>
             <input type="text" class="input input-sm input-bordered" v-model="interviewData.city">
+            <!-- <hr class="mt-6 w-screen" style="height:1px;border-width:0;color:gray;background-color:gray"> -->
+            <p class="divider w-80 mt-6"></p>
             </div>
 
             <div class="form-control">
@@ -51,6 +53,7 @@
               <span class="label-text">Area</span>
             </label>
             <input type="text" class="input input-sm input-bordered" v-model="interviewData.area">
+            <p class="divider w-80 mt-6"></p>
             </div>
 
             <div class="form-control">
@@ -58,6 +61,7 @@
               <span class="label-text">Mobile</span>
             </label>
             <input type="text" class="input input-sm input-bordered" v-model="interviewData.mobile">
+            <p class="divider w-80 mt-6"></p>
             </div>
 
             <div class="form-control">
@@ -65,6 +69,7 @@
               <span class="label-text">Age</span>
             </label>
             <input type="number" class="input input-sm input-bordered" v-model="interviewData.age">
+            <p class="divider w-full mt-6"></p>
             </div>
 
             <div class="form-control">
@@ -144,7 +149,7 @@
                   </template>
                 </Multiselect> -->
             <input type="text" class="input input-sm input-bordered" v-model="interviewData.toStore">
-            <select name="stores" id="stores" v-model="interviewData.toStore" multiple>
+            <select name="stores" id="stores" v-model="interviewData.toStore" multiple class="h-32">
               <option v-for="store in storesOptions" :key="store.id" :value="store">{{store}}</option>
             </select>
           </div>
@@ -183,7 +188,7 @@
 
           </div>
           <!--footer-->
-          <div class="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+          <div class="flex items-center justify-end p-2 border-t border-solid border-blueGray-200 rounded-b">
             <button class="text-red-500 bg-transparent border border-solid border-red-500 hover:bg-red-500 hover:text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" @click="cancelAll">
               Close
             </button>
@@ -226,6 +231,7 @@ export default defineComponent({
   emits: ['refetch', 'refetchinterviews', 'changingvalue', 'changingmessage'],
   components: {
     DeleteModal
+    // ,Multiselect
   },
   props: {
     rowId: {
@@ -353,6 +359,12 @@ export default defineComponent({
       if (props.editedInterview?.interviewId !== '') {
         filledFields(props.editedInterview as Interview)
       }
+      if (props.editedInterview?.result === 'FAILED') {
+        rejectionFlag.value = true
+      }
+      if (props.editedInterview?.result === 'HIRED' || checkIfValidShop(props.editedInterview as Interview)) {
+        hiredFlag.value = true
+      }
     })
     const filledFields = (filledInterview :Interview) => {
       // console.log('what i sent ', filledInterview)
@@ -399,6 +411,12 @@ export default defineComponent({
       emit('changingvalue')
     }
 
+    const checkIfValidShop = (result:Interview) => {
+      for (const store of storesOptions) {
+        if (result.result === store) return true
+      }
+    }
+
     return {
       interviewData,
       createInterview,
@@ -417,6 +435,7 @@ export default defineComponent({
       rejectionFlag,
       hiredFlag,
 
+      checkIfValidShop,
       options,
       storesOptions
     }
@@ -425,5 +444,12 @@ export default defineComponent({
 })
 </script>
 <style lang="scss" scoped>
-
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
 </style>
