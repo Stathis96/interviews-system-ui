@@ -10,6 +10,7 @@ export default interface InterviewInputData{
   workPermit: boolean,
   efetSeminars: boolean,
   vaccinated: boolean,
+  isHired: boolean | null,
   doses : number,
   shifts : number,
   comments: string[],

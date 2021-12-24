@@ -14,6 +14,22 @@
                         </svg>
                       </button>
                     </div>
+
+                    <div v-if="!showNotNull" class="ml-20 flex items-center">
+                      <div class="relative">
+                        <label for="start" class="font-bold">Start date:</label>
+                        <input type="date" id="start" name="trip-start"
+
+                          min="2020-01-21" max="2030-12-31" v-model="startDate" >
+                      </div>
+                      <div class="relative">
+                        <label for="start" class="font-bold">End date:</label>
+                        <input type="date" id="start" name="trip-start"
+
+                          min="2020-01-21" max="2030-12-31" v-model="endDate">
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="w-full lg:w-2/3 flex flex-col lg:flex-row items-start lg:items-center justify-end">
@@ -48,7 +64,7 @@
 
                     <div class="lg:ml-6 flex items-center">
                     <!-- Button for Showing Interviews with NULL RESULT -->
-                        <button class="bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showNotNull = !showNotNull">StandBy Interviews</button>
+                        <button class="bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showNotNull = !showNotNull">From-To Interviews</button>
                         <button class="ml-2 bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showPending = !showPending">Pending Interviews</button>
                         <!-- ADD NEW INTERVIEW -->
                         <div class="text-white ml-4 cursor-pointer focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray bg-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 w-8 h-8 rounded flex items-center justify-center">
@@ -109,13 +125,14 @@
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-center text-sm tracking-normal leading-4">ToStore</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-center text-sm tracking-normal leading-4">Result</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-left text-sm tracking-normal leading-4">Bio</th>
+                            <th class="text-gray-600 dark:text-gray-400 font-bold pr-6 text-center text-sm tracking-normal leading-4">Hired</th>
                             <th class="text-gray-600 dark:text-gray-400 font-bold pr-8 text-left text-sm tracking-normal leading-4">More</th>
                         </tr>
                     </thead>
                     <!-- Table's Rows  -->
                     <tbody>
                         <tr class="h-10 border-gray-300 border-b" v-for="result in paginatedResult" :key="result.id" :result="result"
-                          :class="result.result === null || result.result === '' ? 'bg-white': result.result === 'FAILED' ? 'bg-red-300' : checkIfValidShop(result) ? 'bg-green-200' : 'bg-yellow-100'"
+                          :class="result.isHired === null && checkIfValidShop(result) ? 'bg-yellow-100': result.isHired === false ? 'bg-red-200' : result.isHired === true ? 'bg-green-200' : 'bg-white'"
                         >
                             <td class="pl-4 text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{moment(result?.date).format('L, h:mm:ss a')}}</td>
                             <td class="text-sm pr-6 whitespace-no-wrap text-gray-800 dark:text-gray-100 tracking-normal leading-4">{{result.firstName}}</td>
@@ -175,6 +192,11 @@
                               </div>
                             </td>
                             <!-- For Bio -->
+
+                            <td class="pl-8 pr-6 text-left whitespace-no-wrap text-sm text-gray-800 dark:text-gray-100 tracking-normal leading-4">
+                                <input type="checkbox" v-if="result.isHired" class="relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" checked disabled  />
+                                <input type="checkbox" v-else class="relative w-4 h-4 border rounded border-gray-400 bg-white dark:bg-gray-800 outline-none" disabled  />
+                            </td>
 
                             <!-- For action bullets -->
                             <td class="pr-8 relative">
@@ -281,6 +303,7 @@ export default defineComponent({
       age: 15,
       healthCertificate: false,
       workPermit: false,
+      isHired: null,
       efetSeminars: false,
       vaccinated: false,
       doses: 0,
@@ -381,10 +404,13 @@ export default defineComponent({
         console.log('pendings value', showNotNull.value)
         return undefined
       } else if (showPending.value === false && showNotNull.value === true) {
-        console.log('pendings value', showPending.value)
+        console.log('else if', showPending.value)
+        console.log()
         return 'pending'
       } else {
-        return 'null'
+        console.log('start Date', startDate.value)
+        console.log('end Date', endDate.value)
+        return startDate.value + ',' + endDate.value
       }
     })
 
@@ -464,6 +490,10 @@ export default defineComponent({
       }
     }
 
+    const startDate = ref('')
+    const endDate = ref('')
+    console.log('start Date', startDate.value)
+    console.log('endDate', endDate.value)
     return {
       moment,
       editedInterview,
@@ -512,7 +542,9 @@ export default defineComponent({
       showFullString,
 
       sortData,
-      sortAscending
+      sortAscending,
+      startDate,
+      endDate
     }
   }
 })

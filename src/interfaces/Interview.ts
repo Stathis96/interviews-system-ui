@@ -13,6 +13,7 @@ export default interface Interview{
   workPermit: boolean,
   efetSeminars: boolean,
   vaccinated: boolean,
+  isHired: boolean | null,
   doses : number,
   shifts : number,
   comments: string[],

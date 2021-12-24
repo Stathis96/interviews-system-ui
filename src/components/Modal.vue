@@ -126,6 +126,9 @@
               <span class="label-text">Result</span>
             </label>
             <input type="text" class="input input-sm input-bordered" v-model="interviewData.result">
+            <select class="h-12" name="stores" id="stores" v-model="interviewData.result">
+              <option v-for="store in storesOptions" :key="store.id" :value="store">{{store}}</option>
+            </select>
             </div>
 
             <div class="form-control">
@@ -172,7 +175,7 @@
             <div class="form-control">
               <label class="cursor-pointer label">
                 <span class="label-text">Hired</span>
-                <input type="checkbox" class="toggle toggle-primary" v-model="hiredFlag">
+                <input type="checkbox" class="toggle toggle-primary" v-model="interviewData.isHired">
               </label>
             </div>
           </div>
@@ -249,7 +252,7 @@ export default defineComponent({
     const showDeleteModal = ref(false)
     const sendingFile = ref<PdfFile>()
     const rejectionFlag = ref(false)
-    const hiredFlag = ref(false)
+    // const hiredFlag = ref(false)
 
     const files = ref<any>()
     const tobase64 = ref<string>('')
@@ -297,6 +300,7 @@ export default defineComponent({
       healthCertificate: false,
       workPermit: false,
       efetSeminars: false,
+      isHired: null,
       vaccinated: false,
       doses: 0,
       shifts: 0,
@@ -313,8 +317,8 @@ export default defineComponent({
     useInterviewUpdateMutations(interviewData.value)
 
     const submitAdd = () => {
-      if (rejectionFlag.value) interviewData.value.result = 'FAILED'
-      if (hiredFlag.value) interviewData.value.result = 'HIRED'
+      if (rejectionFlag.value) interviewData.value.isHired = false
+      if (!rejectionFlag.value && !interviewData.value.isHired) interviewData.value.isHired = null
       if (interviewData.value.result === '') interviewData.value.result = null
       if (interviewData.value.bio === '.pdf') interviewData.value.bio = ''
       interviewData.value.bio = tobase64.value
@@ -359,12 +363,12 @@ export default defineComponent({
       if (props.editedInterview?.interviewId !== '') {
         filledFields(props.editedInterview as Interview)
       }
-      if (props.editedInterview?.result === 'FAILED') {
+      if (props.editedInterview?.isHired === false) {
         rejectionFlag.value = true
       }
-      if (props.editedInterview?.result === 'HIRED' || checkIfValidShop(props.editedInterview as Interview)) {
-        hiredFlag.value = true
-      }
+      // if (props.editedInterview?.result === 'HIRED' || checkIfValidShop(props.editedInterview as Interview)) {
+      //   hiredFlag.value = true
+      // }
     })
     const filledFields = (filledInterview :Interview) => {
       // console.log('what i sent ', filledInterview)
@@ -384,6 +388,7 @@ export default defineComponent({
       interviewData.value.comments = filledInterview.comments
       interviewData.value.toStore = filledInterview.toStore
       interviewData.value.result = filledInterview.result
+      interviewData.value.isHired = filledInterview.isHired
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       interviewData.value.bio = `${filledInterview.bio?.name}.pdf`
     }
@@ -400,6 +405,7 @@ export default defineComponent({
       interviewData.value.workPermit = false
       interviewData.value.efetSeminars = false
       interviewData.value.vaccinated = false
+      interviewData.value.isHired = null
       interviewData.value.doses = 0
       interviewData.value.shifts = 0
       interviewData.value.comments = ['']
@@ -433,7 +439,7 @@ export default defineComponent({
       toggleModal,
       sendingFile,
       rejectionFlag,
-      hiredFlag,
+      // hiredFlag,
 
       checkIfValidShop,
       options,

@@ -5,7 +5,7 @@
     <MainTable
     />
   </div>
-  <!-- <Footer/> -->
+  <Footer/>
   </div>
 </template>
 
@@ -13,13 +13,13 @@
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { authService } from '../boot/auth'
 import MainTable from '../components/MainTable.vue'
-// import Footer from '../components/Footer.vue'
+import Footer from '../components/Footer.vue'
 import Header from '../components/Header.vue'
 
 export default defineComponent({
   components: {
     MainTable,
-    // Footer,
+    Footer,
     Header
   },
   setup () {
