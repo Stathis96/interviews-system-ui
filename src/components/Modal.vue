@@ -152,7 +152,7 @@
                   </template>
                 </Multiselect> -->
             <input type="text" class="input input-sm input-bordered" v-model="interviewData.toStore">
-            <select name="stores" id="stores" v-model="interviewData.toStore" multiple class="h-32">
+            <select name="stores" id="stores" v-model="interviewData.toStore" multiple class="h-44">
               <option v-for="store in storesOptions" :key="store.id" :value="store">{{store}}</option>
             </select>
           </div>

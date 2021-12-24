@@ -66,6 +66,7 @@
                     <!-- Button for Showing Interviews with NULL RESULT -->
                         <button class="bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showNotNull = !showNotNull">From-To Interviews</button>
                         <button class="ml-2 bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showPending = !showPending">Pending Interviews</button>
+                        <button class="ml-2 bg-gray-200 transition duration-150 ease-in-out focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray hover:bg-gray-300 rounded text-indigo-700 px-5 h-8 flex items-center text-sm" @click="showStandBy = !showStandBy">StandyBy Interviews</button>
                         <!-- ADD NEW INTERVIEW -->
                         <div class="text-white ml-4 cursor-pointer focus:outline-none border border-transparent focus:border-gray-800 focus:shadow-outline-gray bg-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 w-8 h-8 rounded flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" @click="openCreateDialog(emptyInterview)" >
@@ -318,6 +319,7 @@ export default defineComponent({
     const addInterview = ref(false)
     const showNotNull = ref(true)
     const showPending = ref(true)
+    const showStandBy = ref(true)
     const showPdf = ref(false)
     const rowId = ref('')
     const editedInterview = ref<Interview>()
@@ -400,13 +402,15 @@ export default defineComponent({
     })
 
     const status = computed(() => {
-      if (showNotNull.value === true && showPending.value === true) {
+      if (showNotNull.value === true && showPending.value === true && showStandBy.value === true) {
         console.log('pendings value', showNotNull.value)
         return undefined
-      } else if (showPending.value === false && showNotNull.value === true) {
+      } else if (showPending.value === false && showNotNull.value === true && showStandBy.value === true) {
         console.log('else if', showPending.value)
         console.log()
         return 'pending'
+      } else if (showPending.value === true && showNotNull.value === true && showStandBy.value === false) {
+        return 'standby'
       } else {
         console.log('start Date', startDate.value)
         console.log('end Date', endDate.value)
@@ -509,6 +513,7 @@ export default defineComponent({
       showTooltip,
       showNotNull,
       showPending,
+      showStandBy,
       showrow,
       showBullets,
       closemodal,
