@@ -81,6 +81,5 @@ export const storesOptions = [
   'bnetrodos',
   'bnetlarnaca',
   'twkallithea',
-  'bnetchania',
-  'HIRED'
+  'bnetchania'
 ]

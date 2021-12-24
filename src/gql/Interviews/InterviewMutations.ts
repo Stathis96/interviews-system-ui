@@ -20,6 +20,7 @@ mutation createInterview($data: InterviewInputData!){
     toStore
     result
     bio
+    isHired
   }
 }
 `
@@ -43,6 +44,7 @@ mutation updateInterview($updateInterviewData: InterviewInputData!, $updateInter
     toStore
     result
     bio
+    isHired
   }
 }
 `

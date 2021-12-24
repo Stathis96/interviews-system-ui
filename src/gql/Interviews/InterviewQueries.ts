@@ -22,6 +22,7 @@ query getPaginatedInterviews($getPaginatedInterviewsData: PaginationInputData!,$
     toStore
     result
     bio
+    isHired
     }
     total
     offset
@@ -50,6 +51,7 @@ export const getAllInterviews = gql`
     toStore
     result
     bio
+    isHired
   }
 }
 `
@@ -75,6 +77,7 @@ export const getNullInterviews = gql`
     toStore
     result
     bio
+    isHired
   }
 }
 `
@@ -98,6 +101,7 @@ export const getInterview = gql`
     comments
     toStore
     result
+    isHired
     bio
     }
   }

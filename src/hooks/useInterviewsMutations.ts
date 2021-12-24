@@ -39,7 +39,8 @@ export function useInterviewMutations (variables: InterviewInputData) {
               comments: variables.comments,
               toStore: variables.toStore,
               result: variables.result,
-              bio: variables.bio
+              bio: variables.bio,
+              isHired: variables.isHired
             }
           }
         }
@@ -99,7 +100,8 @@ export function useInterviewUpdateMutations (variables: InterviewInputData) {
               comments: variables.comments,
               toStore: variables.toStore,
               result: variables.result,
-              bio: variables.bio
+              bio: variables.bio,
+              isHired: variables.isHired
             },
             updateInterviewId: updateInterviewId
           }
